@@ -1,6 +1,6 @@
 
-import { useState } from 'react';
-import { Plus, Search, Edit, Trash2, Eye } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Plus, Search, Edit, Trash2, Eye, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -9,11 +9,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { products, categories } from '@/data/products';
+import { Checkbox } from '@/components/ui/checkbox';
+import { products as initialProducts, categories } from '@/data/products';
 import { useToast } from '@/hooks/use-toast';
 
 const AdminProducts = () => {
   const { toast } = useToast();
+  const [products, setProducts] = useState(initialProducts);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -21,11 +23,24 @@ const AdminProducts = () => {
     name: '',
     description: '',
     price: '',
+    originalPrice: '',
     category: '',
-    image: '/placeholder.svg',
+    brand: '',
+    image: '',
     isFeatured: false,
-    isNew: false
+    isNew: false,
+    rating: '4.0',
+    reviewCount: '0',
+    stock: ''
   });
+
+  useEffect(() => {
+    const savedProducts = localStorage.getItem('customProducts');
+    if (savedProducts) {
+      const customProducts = JSON.parse(savedProducts);
+      setProducts([...initialProducts, ...customProducts]);
+    }
+  }, []);
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -43,6 +58,29 @@ const AdminProducts = () => {
       return;
     }
 
+    const product = {
+      id: Date.now().toString(),
+      name: newProduct.name,
+      description: newProduct.description,
+      price: parseFloat(newProduct.price),
+      originalPrice: newProduct.originalPrice ? parseFloat(newProduct.originalPrice) : undefined,
+      category: newProduct.category,
+      brand: newProduct.brand,
+      image: newProduct.image || 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=500&h=500&fit=crop',
+      isFeatured: newProduct.isFeatured,
+      isNew: newProduct.isNew,
+      rating: parseFloat(newProduct.rating),
+      reviewCount: parseInt(newProduct.reviewCount),
+      stock: parseInt(newProduct.stock)
+    };
+
+    const updatedProducts = [...products, product];
+    setProducts(updatedProducts);
+
+    // Save custom products to localStorage
+    const customProducts = updatedProducts.filter(p => !initialProducts.find(ip => ip.id === p.id));
+    localStorage.setItem('customProducts', JSON.stringify(customProducts));
+
     toast({
       title: "Product added",
       description: `${newProduct.name} has been added to your catalog.`,
@@ -52,19 +90,43 @@ const AdminProducts = () => {
       name: '',
       description: '',
       price: '',
+      originalPrice: '',
       category: '',
-      image: '/placeholder.svg',
+      brand: '',
+      image: '',
       isFeatured: false,
-      isNew: false
+      isNew: false,
+      rating: '4.0',
+      reviewCount: '0',
+      stock: ''
     });
     setIsAddDialogOpen(false);
   };
 
   const handleDeleteProduct = (productId: string, productName: string) => {
+    const updatedProducts = products.filter(p => p.id !== productId);
+    setProducts(updatedProducts);
+
+    // Update localStorage
+    const customProducts = updatedProducts.filter(p => !initialProducts.find(ip => ip.id === p.id));
+    localStorage.setItem('customProducts', JSON.stringify(customProducts));
+
     toast({
       title: "Product deleted",
       description: `${productName} has been removed from your catalog.`,
     });
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const imageUrl = event.target?.result as string;
+        setNewProduct(prev => ({ ...prev, image: imageUrl }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -82,20 +144,32 @@ const AdminProducts = () => {
                 Add Product
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-md">
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Add New Product</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
-                <div>
-                  <Label htmlFor="productName">Product Name *</Label>
-                  <Input
-                    id="productName"
-                    value={newProduct.name}
-                    onChange={(e) => setNewProduct(prev => ({ ...prev, name: e.target.value }))}
-                    placeholder="Enter product name"
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="productName">Product Name *</Label>
+                    <Input
+                      id="productName"
+                      value={newProduct.name}
+                      onChange={(e) => setNewProduct(prev => ({ ...prev, name: e.target.value }))}
+                      placeholder="Enter product name"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="productBrand">Brand *</Label>
+                    <Input
+                      id="productBrand"
+                      value={newProduct.brand}
+                      onChange={(e) => setNewProduct(prev => ({ ...prev, brand: e.target.value }))}
+                      placeholder="Enter brand name"
+                    />
+                  </div>
                 </div>
+                
                 <div>
                   <Label htmlFor="productDescription">Description *</Label>
                   <Textarea
@@ -106,46 +180,131 @@ const AdminProducts = () => {
                     rows={3}
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                
+                <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <Label htmlFor="productPrice">Price *</Label>
+                    <Label htmlFor="productPrice">Price (₹) *</Label>
                     <Input
                       id="productPrice"
                       type="number"
                       value={newProduct.price}
                       onChange={(e) => setNewProduct(prev => ({ ...prev, price: e.target.value }))}
-                      placeholder="0.00"
+                      placeholder="0"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="productCategory">Category *</Label>
-                    <Select 
-                      value={newProduct.category} 
-                      onValueChange={(value) => setNewProduct(prev => ({ ...prev, category: value }))}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map(category => (
-                          <SelectItem key={category.id} value={category.id}>
-                            {category.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Label htmlFor="originalPrice">Original Price (₹)</Label>
+                    <Input
+                      id="originalPrice"
+                      type="number"
+                      value={newProduct.originalPrice}
+                      onChange={(e) => setNewProduct(prev => ({ ...prev, originalPrice: e.target.value }))}
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="stock">Stock *</Label>
+                    <Input
+                      id="stock"
+                      type="number"
+                      value={newProduct.stock}
+                      onChange={(e) => setNewProduct(prev => ({ ...prev, stock: e.target.value }))}
+                      placeholder="0"
+                    />
                   </div>
                 </div>
+                
                 <div>
-                  <Label htmlFor="productImage">Image URL</Label>
-                  <Input
-                    id="productImage"
-                    value={newProduct.image}
-                    onChange={(e) => setNewProduct(prev => ({ ...prev, image: e.target.value }))}
-                    placeholder="Enter image URL"
-                  />
+                  <Label htmlFor="productCategory">Category *</Label>
+                  <Select 
+                    value={newProduct.category} 
+                    onValueChange={(value) => setNewProduct(prev => ({ ...prev, category: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories.map(category => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.icon} {category.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
+                
+                <div>
+                  <Label htmlFor="productImage">Product Image</Label>
+                  <div className="space-y-2">
+                    <Input
+                      id="productImage"
+                      value={newProduct.image}
+                      onChange={(e) => setNewProduct(prev => ({ ...prev, image: e.target.value }))}
+                      placeholder="Enter image URL or upload image"
+                    />
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-gray-500">Or upload image:</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="text-sm"
+                      />
+                    </div>
+                    {newProduct.image && (
+                      <img 
+                        src={newProduct.image} 
+                        alt="Preview" 
+                        className="w-20 h-20 object-cover rounded border"
+                      />
+                    )}
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="rating">Rating</Label>
+                    <Input
+                      id="rating"
+                      type="number"
+                      min="1"
+                      max="5"
+                      step="0.1"
+                      value={newProduct.rating}
+                      onChange={(e) => setNewProduct(prev => ({ ...prev, rating: e.target.value }))}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="reviewCount">Review Count</Label>
+                    <Input
+                      id="reviewCount"
+                      type="number"
+                      value={newProduct.reviewCount}
+                      onChange={(e) => setNewProduct(prev => ({ ...prev, reviewCount: e.target.value }))}
+                    />
+                  </div>
+                </div>
+                
                 <div className="flex gap-4">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="featured"
+                      checked={newProduct.isFeatured}
+                      onCheckedChange={(checked) => setNewProduct(prev => ({ ...prev, isFeatured: !!checked }))}
+                    />
+                    <Label htmlFor="featured">Featured Product</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="new"
+                      checked={newProduct.isNew}
+                      onCheckedChange={(checked) => setNewProduct(prev => ({ ...prev, isNew: !!checked }))}
+                    />
+                    <Label htmlFor="new">New Product</Label>
+                  </div>
+                </div>
+                
+                <div className="flex gap-4 pt-4">
                   <Button onClick={handleAddProduct} className="flex-1">
                     Add Product
                   </Button>
@@ -182,7 +341,7 @@ const AdminProducts = () => {
                   <SelectItem value="all">All Categories</SelectItem>
                   {categories.map(category => (
                     <SelectItem key={category.id} value={category.id}>
-                      {category.name}
+                      {category.icon} {category.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -207,6 +366,7 @@ const AdminProducts = () => {
                     <th className="text-left py-3 px-4">Product</th>
                     <th className="text-left py-3 px-4">Category</th>
                     <th className="text-left py-3 px-4">Price</th>
+                    <th className="text-left py-3 px-4">Stock</th>
                     <th className="text-left py-3 px-4">Status</th>
                     <th className="text-left py-3 px-4">Actions</th>
                   </tr>
@@ -223,9 +383,7 @@ const AdminProducts = () => {
                           />
                           <div>
                             <p className="font-semibold">{product.name}</p>
-                            <p className="text-sm text-gray-600 truncate max-w-xs">
-                              {product.description}
-                            </p>
+                            <p className="text-sm text-gray-600">{product.brand}</p>
                           </div>
                         </div>
                       </td>
@@ -235,7 +393,21 @@ const AdminProducts = () => {
                         </Badge>
                       </td>
                       <td className="py-4 px-4">
-                        <span className="font-semibold">${product.price}</span>
+                        <span className="font-semibold">₹{product.price.toLocaleString()}</span>
+                        {product.originalPrice && (
+                          <p className="text-xs text-gray-500 line-through">
+                            ₹{product.originalPrice.toLocaleString()}
+                          </p>
+                        )}
+                      </td>
+                      <td className="py-4 px-4">
+                        <span className={`px-2 py-1 rounded text-xs ${
+                          product.stock <= 5 ? 'bg-red-100 text-red-800' : 
+                          product.stock <= 20 ? 'bg-yellow-100 text-yellow-800' : 
+                          'bg-green-100 text-green-800'
+                        }`}>
+                          {product.stock} units
+                        </span>
                       </td>
                       <td className="py-4 px-4">
                         <div className="flex gap-1">
@@ -258,6 +430,7 @@ const AdminProducts = () => {
                             variant="outline"
                             size="sm"
                             onClick={() => handleDeleteProduct(product.id, product.name)}
+                            disabled={initialProducts.find(p => p.id === product.id) !== undefined}
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>

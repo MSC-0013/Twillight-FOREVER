@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { Search, Eye, Package, Truck, CheckCircle } from 'lucide-react';
+import { Search, Eye, Package, Truck, CheckCircle, Clock, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -34,13 +34,13 @@ const AdminOrders = () => {
 
   const updateOrderStatus = (orderId: string, newStatus: string) => {
     const updatedOrders = orders.map(order => 
-      order.id === orderId ? { ...order, status: newStatus } : order
+      order.id === orderId ? { ...order, status: newStatus, updatedAt: new Date().toISOString() } : order
     );
     setOrders(updatedOrders);
     localStorage.setItem('orders', JSON.stringify(updatedOrders));
     
     toast({
-      title: "Order updated",
+      title: "Order status updated",
       description: `Order #${orderId} status changed to ${newStatus}.`,
     });
   };
@@ -48,13 +48,17 @@ const AdminOrders = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'confirmed':
-        return 'bg-green-100 text-green-800';
-      case 'processing':
         return 'bg-blue-100 text-blue-800';
+      case 'processing':
+        return 'bg-yellow-100 text-yellow-800';
       case 'shipped':
         return 'bg-purple-100 text-purple-800';
+      case 'on-the-way':
+        return 'bg-orange-100 text-orange-800';
       case 'delivered':
         return 'bg-green-100 text-green-800';
+      case 'cancelled':
+        return 'bg-red-100 text-red-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -65,11 +69,15 @@ const AdminOrders = () => {
       case 'confirmed':
         return <CheckCircle className="w-4 h-4" />;
       case 'processing':
-        return <Package className="w-4 h-4" />;
+        return <Clock className="w-4 h-4" />;
       case 'shipped':
+        return <Package className="w-4 h-4" />;
+      case 'on-the-way':
         return <Truck className="w-4 h-4" />;
       case 'delivered':
         return <CheckCircle className="w-4 h-4" />;
+      case 'cancelled':
+        return <AlertCircle className="w-4 h-4" />;
       default:
         return <Package className="w-4 h-4" />;
     }
@@ -80,7 +88,20 @@ const AdminOrders = () => {
     confirmed: orders.filter(o => o.status === 'confirmed').length,
     processing: orders.filter(o => o.status === 'processing').length,
     shipped: orders.filter(o => o.status === 'shipped').length,
-    delivered: orders.filter(o => o.status === 'delivered').length
+    onTheWay: orders.filter(o => o.status === 'on-the-way').length,
+    delivered: orders.filter(o => o.status === 'delivered').length,
+    cancelled: orders.filter(o => o.status === 'cancelled').length
+  };
+
+  const getStatusOptions = (currentStatus: string) => {
+    const statusFlow = ['confirmed', 'processing', 'shipped', 'on-the-way', 'delivered'];
+    const currentIndex = statusFlow.indexOf(currentStatus);
+    
+    if (currentStatus === 'cancelled') {
+      return ['cancelled'];
+    }
+    
+    return statusFlow.slice(currentIndex);
   };
 
   return (
@@ -92,22 +113,22 @@ const AdminOrders = () => {
         </div>
 
         {/* Order Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-8">
           <Card>
             <CardContent className="p-4 text-center">
               <p className="text-2xl font-bold text-gray-900">{orderStats.total}</p>
-              <p className="text-sm text-gray-600">Total Orders</p>
+              <p className="text-sm text-gray-600">Total</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4 text-center">
-              <p className="text-2xl font-bold text-green-600">{orderStats.confirmed}</p>
+              <p className="text-2xl font-bold text-blue-600">{orderStats.confirmed}</p>
               <p className="text-sm text-gray-600">Confirmed</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4 text-center">
-              <p className="text-2xl font-bold text-blue-600">{orderStats.processing}</p>
+              <p className="text-2xl font-bold text-yellow-600">{orderStats.processing}</p>
               <p className="text-sm text-gray-600">Processing</p>
             </CardContent>
           </Card>
@@ -119,8 +140,20 @@ const AdminOrders = () => {
           </Card>
           <Card>
             <CardContent className="p-4 text-center">
+              <p className="text-2xl font-bold text-orange-600">{orderStats.onTheWay}</p>
+              <p className="text-sm text-gray-600">On the Way</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4 text-center">
               <p className="text-2xl font-bold text-green-600">{orderStats.delivered}</p>
               <p className="text-sm text-gray-600">Delivered</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4 text-center">
+              <p className="text-2xl font-bold text-red-600">{orderStats.cancelled}</p>
+              <p className="text-sm text-gray-600">Cancelled</p>
             </CardContent>
           </Card>
         </div>
@@ -150,7 +183,9 @@ const AdminOrders = () => {
                   <SelectItem value="confirmed">Confirmed</SelectItem>
                   <SelectItem value="processing">Processing</SelectItem>
                   <SelectItem value="shipped">Shipped</SelectItem>
+                  <SelectItem value="on-the-way">On the Way</SelectItem>
                   <SelectItem value="delivered">Delivered</SelectItem>
+                  <SelectItem value="cancelled">Cancelled</SelectItem>
                 </SelectContent>
               </Select>
               <div className="text-sm text-gray-600 flex items-center">
@@ -205,26 +240,31 @@ const AdminOrders = () => {
                           </span>
                         </td>
                         <td className="py-4 px-4">
-                          <span className="font-semibold">${order.totalAmount.toFixed(2)}</span>
+                          <span className="font-semibold">₹{order.totalAmount.toLocaleString()}</span>
                         </td>
                         <td className="py-4 px-4">
                           <Select
                             value={order.status}
                             onValueChange={(value) => updateOrderStatus(order.id, value)}
+                            disabled={order.status === 'cancelled'}
                           >
-                            <SelectTrigger className="w-32">
+                            <SelectTrigger className="w-40">
                               <SelectValue>
                                 <Badge className={getStatusColor(order.status)}>
                                   {getStatusIcon(order.status)}
-                                  <span className="ml-1 capitalize">{order.status}</span>
+                                  <span className="ml-1 capitalize">{order.status.replace('-', ' ')}</span>
                                 </Badge>
                               </SelectValue>
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="confirmed">Confirmed</SelectItem>
-                              <SelectItem value="processing">Processing</SelectItem>
-                              <SelectItem value="shipped">Shipped</SelectItem>
-                              <SelectItem value="delivered">Delivered</SelectItem>
+                              {getStatusOptions(order.status).map((status) => (
+                                <SelectItem key={status} value={status}>
+                                  <div className="flex items-center gap-2">
+                                    {getStatusIcon(status)}
+                                    <span className="capitalize">{status.replace('-', ' ')}</span>
+                                  </div>
+                                </SelectItem>
+                              ))}
                             </SelectContent>
                           </Select>
                         </td>
@@ -272,7 +312,7 @@ const AdminOrders = () => {
                                               <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
                                             </div>
                                           </div>
-                                          <span className="font-semibold">${(item.price * item.quantity).toFixed(2)}</span>
+                                          <span className="font-semibold">₹{(item.price * item.quantity).toLocaleString()}</span>
                                         </div>
                                       ))}
                                     </div>
@@ -281,7 +321,7 @@ const AdminOrders = () => {
                                   <div className="border-t pt-4">
                                     <div className="flex justify-between text-lg font-bold">
                                       <span>Total Amount:</span>
-                                      <span>${selectedOrder.totalAmount.toFixed(2)}</span>
+                                      <span>₹{selectedOrder.totalAmount.toLocaleString()}</span>
                                     </div>
                                   </div>
                                 </div>
