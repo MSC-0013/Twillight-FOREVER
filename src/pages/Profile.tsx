@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { User, Package, Settings, Eye } from 'lucide-react';
+import { User, Package, Settings, Eye, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -12,7 +12,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
 const Profile = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, updateUser } = useAuth();
   const { toast } = useToast();
   const [orders, setOrders] = useState<any[]>([]);
   const [userInfo, setUserInfo] = useState({
@@ -44,18 +44,36 @@ const Profile = () => {
 
   useEffect(() => {
     const savedOrders = JSON.parse(localStorage.getItem('orders') || '[]');
-    setOrders(savedOrders);
-  }, []);
+    const userOrders = user ? savedOrders.filter((order: any) => order.userId === user.id) : [];
+    setOrders(userOrders);
+  }, [user]);
 
   const handleUpdateProfile = () => {
     if (user) {
       // Save profile data to localStorage
       localStorage.setItem(`profile_${user.id}`, JSON.stringify(userInfo));
+      
+      // Update user context with new name
+      updateUser({ name: userInfo.name, email: userInfo.email });
+      
       toast({
         title: "Profile updated",
         description: "Your profile information has been updated successfully.",
       });
     }
+  };
+
+  const handleCancelOrder = (orderId: string) => {
+    const updatedOrders = JSON.parse(localStorage.getItem('orders') || '[]').map((order: any) => 
+      order.id === orderId ? { ...order, status: 'cancelled' } : order
+    );
+    localStorage.setItem('orders', JSON.stringify(updatedOrders));
+    setOrders(updatedOrders.filter((order: any) => order.userId === user?.id));
+    
+    toast({
+      title: "Order cancelled",
+      description: `Order #${orderId} has been cancelled.`,
+    });
   };
 
   const getStatusColor = (status: string) => {
@@ -66,18 +84,29 @@ const Profile = () => {
         return 'bg-blue-100 text-blue-800';
       case 'shipped':
         return 'bg-purple-100 text-purple-800';
+      case 'on-the-way':
+        return 'bg-orange-100 text-orange-800';
       case 'delivered':
         return 'bg-green-100 text-green-800';
+      case 'cancelled':
+        return 'bg-red-100 text-red-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
+  };
+
+  const canCancelOrder = (status: string) => {
+    return status === 'confirmed' || status === 'processing' || status === 'shipped';
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">My Profile</h1>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Welcome, {user?.name}</h1>
+            <p className="text-gray-600">Manage your profile and orders</p>
+          </div>
           <Button variant="outline" onClick={logout} className="border-black text-black hover:bg-black hover:text-white">
             Sign Out
           </Button>
@@ -243,12 +272,25 @@ const Profile = () => {
                           <span className="text-sm text-gray-600">
                             {order.items.length} item{order.items.length !== 1 ? 's' : ''}
                           </span>
-                          <Button variant="outline" size="sm" asChild>
-                            <Link to={`/orders/${order.id}`}>
-                              <Eye className="w-4 h-4 mr-2" />
-                              View Details
-                            </Link>
-                          </Button>
+                          <div className="flex gap-2">
+                            <Button variant="outline" size="sm" asChild>
+                              <Link to={`/orders/${order.id}`}>
+                                <Eye className="w-4 h-4 mr-2" />
+                                View Details
+                              </Link>
+                            </Button>
+                            {canCancelOrder(order.status) && (
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => handleCancelOrder(order.id)}
+                                className="text-red-600 border-red-200 hover:bg-red-50"
+                              >
+                                <X className="w-4 h-4 mr-2" />
+                                Cancel Order
+                              </Button>
+                            )}
+                          </div>
                         </div>
                       </div>
                     ))}
