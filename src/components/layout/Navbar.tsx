@@ -39,53 +39,54 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white shadow-xl sticky top-0 z-50 border-b-2 border-gradient-to-r from-purple-500 to-pink-500">
+    <nav className="bg-white shadow-lg sticky top-0 z-50 border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-600 via-pink-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform">
-              <span className="text-white font-bold text-xl">F</span>
+          <Link to="/" className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-black to-gray-800 rounded-lg flex items-center justify-center shadow-md">
+              <span className="text-white font-bold text-sm">F</span>
             </div>
-            <span className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              FOREVER
+            <span className="text-2xl font-bold">
+              <span className="text-black">FOR</span>
+              <span className="text-gray-600">EVER</span>
             </span>
           </Link>
 
           {/* Search Bar */}
-          <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-2xl mx-8">
+          <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-xl mx-6">
             <div className="relative w-full">
               <Input
                 type="text"
-                placeholder="Search for amazing products..."
+                placeholder="Search products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 pr-4 h-12 rounded-full border-2 border-gray-200 focus:border-purple-400 transition-colors"
+                className="pl-10 pr-4 h-10 rounded-lg border border-gray-300 focus:border-black transition-colors"
               />
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             </div>
-            <Button type="submit" className="ml-3 h-12 px-8 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 transition-all">
+            <Button type="submit" className="ml-2 h-10 px-6 rounded-lg bg-black hover:bg-gray-800 text-white">
               Search
             </Button>
           </form>
 
           {/* Navigation Items */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden md:flex items-center space-x-4">
             {/* Wishlist */}
-            <Link to="/wishlist" className="relative p-3 text-gray-600 hover:text-purple-600 transition-colors">
-              <Heart className="w-7 h-7" />
+            <Link to="/wishlist" className="relative p-2 text-gray-600 hover:text-black transition-colors">
+              <Heart className="w-5 h-5" />
               {wishlistItems.length > 0 && (
-                <Badge className="absolute -top-1 -right-1 w-6 h-6 rounded-full text-xs flex items-center justify-center bg-gradient-to-r from-pink-500 to-red-500">
+                <Badge className="absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs flex items-center justify-center bg-red-500">
                   {wishlistItems.length}
                 </Badge>
               )}
             </Link>
 
             {/* Cart */}
-            <Link to="/cart" className="relative p-3 text-gray-600 hover:text-purple-600 transition-colors">
-              <ShoppingCart className="w-7 h-7" />
+            <Link to="/cart" className="relative p-2 text-gray-600 hover:text-black transition-colors">
+              <ShoppingCart className="w-5 h-5" />
               {totalItems > 0 && (
-                <Badge className="absolute -top-1 -right-1 w-6 h-6 rounded-full text-xs flex items-center justify-center bg-gradient-to-r from-purple-500 to-blue-500">
+                <Badge className="absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs flex items-center justify-center bg-black">
                   {totalItems}
                 </Badge>
               )}
@@ -95,12 +96,12 @@ const Navbar = () => {
             {isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-12 px-4 rounded-full hover:bg-purple-50">
-                    <User className="w-6 h-6" />
-                    <span className="ml-2 hidden lg:block font-medium">{user?.name}</span>
+                  <Button variant="ghost" className="relative h-10 px-3 rounded-lg hover:bg-gray-100">
+                    <User className="w-4 h-4" />
+                    <span className="ml-2 hidden lg:block text-sm">{user?.name}</span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 shadow-xl border-2">
+                <DropdownMenuContent align="end" className="w-48 bg-white border shadow-lg">
                   <DropdownMenuItem asChild>
                     <Link to="/profile" className="flex items-center">
                       <User className="w-4 h-4 mr-2" />
@@ -132,11 +133,11 @@ const Navbar = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <div className="flex items-center space-x-3">
-                <Button variant="ghost" asChild className="hover:bg-purple-50">
+              <div className="flex items-center space-x-2">
+                <Button variant="ghost" asChild className="hover:bg-gray-100">
                   <Link to="/login">Login</Link>
                 </Button>
-                <Button asChild className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                <Button asChild className="bg-black hover:bg-gray-800 text-white">
                   <Link to="/register">Sign Up</Link>
                 </Button>
               </div>
@@ -149,28 +150,28 @@ const Navbar = () => {
             className="md:hidden"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </Button>
         </div>
 
         {/* Mobile Search */}
-        <form onSubmit={handleSearch} className="md:hidden pb-4">
+        <form onSubmit={handleSearch} className="md:hidden pb-3">
           <div className="relative">
             <Input
               type="text"
               placeholder="Search products..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 h-12 rounded-full"
+              className="pl-8 h-10 rounded-lg"
             />
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           </div>
         </form>
       </div>
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="md:hidden border-t border-gray-200 bg-white shadow-lg">
+        <div className="md:hidden border-t border-gray-200 bg-white">
           <div className="px-2 pt-2 pb-3 space-y-1">
             <Link
               to="/products"

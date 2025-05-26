@@ -25,17 +25,37 @@ const Profile = () => {
     zipCode: ''
   });
 
+  // Load user profile data
+  useEffect(() => {
+    if (user) {
+      const savedProfile = localStorage.getItem(`profile_${user.id}`);
+      if (savedProfile) {
+        const profileData = JSON.parse(savedProfile);
+        setUserInfo(profileData);
+      } else {
+        setUserInfo(prev => ({
+          ...prev,
+          name: user.name,
+          email: user.email
+        }));
+      }
+    }
+  }, [user]);
+
   useEffect(() => {
     const savedOrders = JSON.parse(localStorage.getItem('orders') || '[]');
     setOrders(savedOrders);
   }, []);
 
   const handleUpdateProfile = () => {
-    // In a real app, this would update the user in the database
-    toast({
-      title: "Profile updated",
-      description: "Your profile information has been updated successfully.",
-    });
+    if (user) {
+      // Save profile data to localStorage
+      localStorage.setItem(`profile_${user.id}`, JSON.stringify(userInfo));
+      toast({
+        title: "Profile updated",
+        description: "Your profile information has been updated successfully.",
+      });
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -58,104 +78,111 @@ const Profile = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">My Profile</h1>
-          <Button variant="outline" onClick={logout}>
+          <Button variant="outline" onClick={logout} className="border-black text-black hover:bg-black hover:text-white">
             Sign Out
           </Button>
         </div>
 
         <Tabs defaultValue="profile" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="profile" className="flex items-center gap-2">
+          <TabsList className="grid w-full grid-cols-2 bg-white border border-gray-200">
+            <TabsTrigger value="profile" className="flex items-center gap-2 data-[state=active]:bg-black data-[state=active]:text-white">
               <User className="w-4 h-4" />
               Profile Information
             </TabsTrigger>
-            <TabsTrigger value="orders" className="flex items-center gap-2">
+            <TabsTrigger value="orders" className="flex items-center gap-2 data-[state=active]:bg-black data-[state=active]:text-white">
               <Package className="w-4 h-4" />
               Order History
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="profile">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+            <Card className="border-gray-200">
+              <CardHeader className="bg-gray-50">
+                <CardTitle className="flex items-center gap-2 text-black">
                   <Settings className="w-5 h-5" />
                   Profile Information
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-6 p-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="name">Full Name</Label>
+                    <Label htmlFor="name" className="text-gray-700">Full Name</Label>
                     <Input
                       id="name"
                       value={userInfo.name}
                       onChange={(e) => setUserInfo(prev => ({ ...prev, name: e.target.value }))}
+                      className="border-gray-300 focus:border-black"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email" className="text-gray-700">Email</Label>
                     <Input
                       id="email"
                       type="email"
                       value={userInfo.email}
                       onChange={(e) => setUserInfo(prev => ({ ...prev, email: e.target.value }))}
+                      className="border-gray-300 focus:border-black"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="phone">Phone</Label>
+                    <Label htmlFor="phone" className="text-gray-700">Phone</Label>
                     <Input
                       id="phone"
                       value={userInfo.phone}
                       onChange={(e) => setUserInfo(prev => ({ ...prev, phone: e.target.value }))}
                       placeholder="(555) 123-4567"
+                      className="border-gray-300 focus:border-black"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="address">Address</Label>
+                    <Label htmlFor="address" className="text-gray-700">Address</Label>
                     <Input
                       id="address"
                       value={userInfo.address}
                       onChange={(e) => setUserInfo(prev => ({ ...prev, address: e.target.value }))}
                       placeholder="123 Main Street"
+                      className="border-gray-300 focus:border-black"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <Label htmlFor="city">City</Label>
+                    <Label htmlFor="city" className="text-gray-700">City</Label>
                     <Input
                       id="city"
                       value={userInfo.city}
                       onChange={(e) => setUserInfo(prev => ({ ...prev, city: e.target.value }))}
                       placeholder="New York"
+                      className="border-gray-300 focus:border-black"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="state">State</Label>
+                    <Label htmlFor="state" className="text-gray-700">State</Label>
                     <Input
                       id="state"
                       value={userInfo.state}
                       onChange={(e) => setUserInfo(prev => ({ ...prev, state: e.target.value }))}
                       placeholder="NY"
+                      className="border-gray-300 focus:border-black"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="zipCode">ZIP Code</Label>
+                    <Label htmlFor="zipCode" className="text-gray-700">ZIP Code</Label>
                     <Input
                       id="zipCode"
                       value={userInfo.zipCode}
                       onChange={(e) => setUserInfo(prev => ({ ...prev, zipCode: e.target.value }))}
                       placeholder="10001"
+                      className="border-gray-300 focus:border-black"
                     />
                   </div>
                 </div>
 
-                <Button onClick={handleUpdateProfile}>
+                <Button onClick={handleUpdateProfile} className="bg-black hover:bg-gray-800 text-white">
                   Update Profile
                 </Button>
               </CardContent>

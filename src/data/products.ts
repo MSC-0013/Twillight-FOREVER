@@ -2,543 +2,993 @@
 export interface Product {
   id: string;
   name: string;
-  description: string;
   price: number;
   originalPrice?: number;
   image: string;
-  images: string[];
+  images?: string[];
+  description: string;
   category: string;
-  subcategory: string;
+  brand: string;
   rating: number;
   reviewCount: number;
   stock: number;
-  brand: string;
+  isFeatured: boolean;
+  isNew: boolean;
   features: string[];
   specifications: Record<string, string>;
-  tags: string[];
-  isNew?: boolean;
-  isFeatured?: boolean;
-  discount?: number;
 }
 
-export const products: Product[] = [
-  // Electronics - Smartphones
+export interface Category {
+  id: string;
+  name: string;
+  icon: string;
+}
+
+export interface Banner {
+  id: string;
+  title: string;
+  subtitle: string;
+  image: string;
+  link: string;
+  cta: string;
+}
+
+export const categories: Category[] = [
+  { id: 'electronics', name: 'Electronics', icon: '📱' },
+  { id: 'clothing', name: 'Clothing', icon: '👕' },
+  { id: 'books', name: 'Books', icon: '📚' },
+  { id: 'home-garden', name: 'Home & Garden', icon: '🏠' },
+  { id: 'sports-outdoors', name: 'Sports & Outdoors', icon: '⚽' },
+  { id: 'beauty-health', name: 'Beauty & Health', icon: '💄' }
+];
+
+export const banners: Banner[] = [
   {
     id: '1',
-    name: 'iPhone 15 Pro Max',
-    description: 'The most powerful iPhone ever with titanium design, A17 Pro chip, and advanced camera system.',
-    price: 1199,
-    originalPrice: 1299,
-    image: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500',
-    images: [
-      'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500',
-      'https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?w=500'
-    ],
-    category: 'Electronics',
-    subcategory: 'Smartphones',
-    rating: 4.8,
-    reviewCount: 2847,
-    stock: 25,
-    brand: 'Apple',
-    features: ['5G Ready', 'Face ID', 'Wireless Charging', 'Water Resistant'],
-    specifications: {
-      'Display': '6.7" Super Retina XDR',
-      'Storage': '256GB',
-      'Camera': '48MP Main + 12MP Ultra Wide + 12MP Telephoto',
-      'Battery': 'Up to 29 hours video playback'
-    },
-    tags: ['premium', 'flagship', 'camera'],
-    isNew: true,
-    isFeatured: true,
-    discount: 8
+    title: 'New Collection',
+    subtitle: 'Discover the latest trends in fashion and lifestyle',
+    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&h=400&fit=crop',
+    link: '/products?category=clothing',
+    cta: 'Shop Fashion'
   },
   {
     id: '2',
-    name: 'Samsung Galaxy S24 Ultra',
-    description: 'Premium Android flagship with S Pen, 200MP camera, and AI features.',
-    price: 1299,
-    originalPrice: 1399,
-    image: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=500',
-    images: ['https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=500'],
-    category: 'Electronics',
-    subcategory: 'Smartphones',
-    rating: 4.7,
-    reviewCount: 1923,
-    stock: 18,
-    brand: 'Samsung',
-    features: ['S Pen', '200MP Camera', 'AI Photo Edit', '5G'],
-    specifications: {
-      'Display': '6.8" Dynamic AMOLED 2X',
-      'Storage': '256GB',
-      'Camera': '200MP Main + 50MP Periscope + 12MP Ultra Wide',
-      'Battery': '5000mAh'
-    },
-    tags: ['android', 'flagship', 'photography'],
-    isFeatured: true,
-    discount: 7
+    title: 'Tech Essentials',
+    subtitle: 'Upgrade your digital lifestyle with premium electronics',
+    image: 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=1200&h=400&fit=crop',
+    link: '/products?category=electronics',
+    cta: 'Shop Electronics'
   },
-  // Electronics - Laptops
   {
     id: '3',
-    name: 'MacBook Pro 16" M3',
-    description: 'Supercharged by M3 Pro chip for demanding workflows.',
-    price: 2499,
-    image: 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=500',
-    images: ['https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=500'],
-    category: 'Electronics',
-    subcategory: 'Laptops',
-    rating: 4.9,
-    reviewCount: 1523,
-    stock: 15,
-    brand: 'Apple',
-    features: ['M3 Chip', 'Liquid Retina XDR Display', 'All-day Battery', 'Thunderbolt 4'],
+    title: 'Home Comfort',
+    subtitle: 'Transform your space with our home collection',
+    image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1200&h=400&fit=crop',
+    link: '/products?category=home-garden',
+    cta: 'Shop Home'
+  }
+];
+
+export const products: Product[] = [
+  // Electronics
+  {
+    id: '1',
+    name: 'Premium Wireless Headphones',
+    price: 299,
+    originalPrice: 399,
+    image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop',
+    images: [
+      'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=400&h=400&fit=crop'
+    ],
+    description: 'Experience superior sound quality with our premium wireless headphones featuring active noise cancellation.',
+    category: 'electronics',
+    brand: 'AudioTech',
+    rating: 4.8,
+    reviewCount: 1247,
+    stock: 25,
+    isFeatured: true,
+    isNew: false,
+    features: [
+      'Active Noise Cancellation',
+      '30-hour battery life',
+      'Premium leather finish',
+      'Hi-Res Audio certified'
+    ],
     specifications: {
-      'Processor': 'Apple M3 Pro',
-      'Memory': '18GB Unified Memory',
-      'Storage': '512GB SSD',
-      'Display': '16.2" Liquid Retina XDR'
-    },
-    tags: ['professional', 'creative', 'powerful'],
-    isFeatured: true
+      'Driver Size': '40mm',
+      'Frequency Response': '20Hz-20kHz',
+      'Battery Life': '30 hours',
+      'Weight': '250g'
+    }
+  },
+  {
+    id: '2',
+    name: 'Smart Fitness Watch',
+    price: 249,
+    originalPrice: 299,
+    image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop',
+    description: 'Track your fitness goals with this advanced smartwatch featuring heart rate monitoring and GPS.',
+    category: 'electronics',
+    brand: 'FitTech',
+    rating: 4.6,
+    reviewCount: 892,
+    stock: 40,
+    isFeatured: true,
+    isNew: true,
+    features: [
+      'Heart rate monitoring',
+      'GPS tracking',
+      'Water resistant',
+      '7-day battery life'
+    ],
+    specifications: {
+      'Display': '1.4" OLED',
+      'Battery': '7 days',
+      'Water Rating': '5ATM',
+      'Sensors': 'Heart rate, GPS, Accelerometer'
+    }
+  },
+  {
+    id: '3',
+    name: 'Wireless Bluetooth Speaker',
+    price: 79,
+    image: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=400&fit=crop',
+    description: 'Portable speaker with rich bass and 360-degree sound for any occasion.',
+    category: 'electronics',
+    brand: 'SoundWave',
+    rating: 4.4,
+    reviewCount: 567,
+    stock: 60,
+    isFeatured: false,
+    isNew: true,
+    features: [
+      '360-degree sound',
+      '12-hour battery',
+      'Waterproof design',
+      'Voice assistant compatible'
+    ],
+    specifications: {
+      'Power': '20W',
+      'Battery': '12 hours',
+      'Range': '30 feet',
+      'Weight': '600g'
+    }
   },
   {
     id: '4',
-    name: 'Dell XPS 13 Plus',
-    description: 'Ultra-premium Windows laptop with stunning InfinityEdge display.',
-    price: 1299,
-    originalPrice: 1499,
-    image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500',
-    images: ['https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500'],
-    category: 'Electronics',
-    subcategory: 'Laptops',
-    rating: 4.6,
-    reviewCount: 892,
-    stock: 22,
-    brand: 'Dell',
-    features: ['InfinityEdge Display', 'Intel 12th Gen', 'Premium Build', 'Fast Charging'],
+    name: 'Ultra HD Webcam',
+    price: 129,
+    image: 'https://images.unsplash.com/photo-1587344007451-b06fe023f0f7?w=400&h=400&fit=crop',
+    description: '4K webcam with auto-focus and noise-canceling microphone for professional video calls.',
+    category: 'electronics',
+    brand: 'VisionTech',
+    rating: 4.7,
+    reviewCount: 423,
+    stock: 35,
+    isFeatured: false,
+    isNew: false,
+    features: [
+      '4K Ultra HD',
+      'Auto-focus',
+      'Noise-canceling mic',
+      'Privacy shutter'
+    ],
     specifications: {
-      'Processor': 'Intel Core i7-1260P',
-      'Memory': '16GB LPDDR5',
-      'Storage': '512GB SSD',
-      'Display': '13.4" OLED Touch'
-    },
-    tags: ['windows', 'ultrabook', 'business'],
-    discount: 13
+      'Resolution': '4K @ 30fps',
+      'Field of View': '90°',
+      'Microphone': 'Dual stereo',
+      'Connection': 'USB 3.0'
+    }
   },
-  // Electronics - Audio
+
+  // Clothing
   {
     id: '5',
-    name: 'Sony WH-1000XM5',
-    description: 'Industry-leading noise canceling headphones with exceptional sound quality.',
-    price: 399,
-    image: 'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=500',
-    images: ['https://images.unsplash.com/photo-1484704849700-f032a568e944?w=500'],
-    category: 'Electronics',
-    subcategory: 'Audio',
-    rating: 4.7,
-    reviewCount: 1756,
-    stock: 32,
-    brand: 'Sony',
-    features: ['Active Noise Canceling', '30hr Battery', 'Quick Charge', 'Multipoint Connection'],
+    name: 'Classic Cotton T-Shirt',
+    price: 29,
+    originalPrice: 39,
+    image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop',
+    description: 'Premium cotton t-shirt with perfect fit and breathable fabric.',
+    category: 'clothing',
+    brand: 'ComfortWear',
+    rating: 4.5,
+    reviewCount: 234,
+    stock: 100,
+    isFeatured: true,
+    isNew: false,
+    features: [
+      '100% organic cotton',
+      'Pre-shrunk fabric',
+      'Comfortable fit',
+      'Machine washable'
+    ],
     specifications: {
-      'Driver': '30mm',
-      'Frequency': '4Hz-40kHz',
-      'Battery': '30 hours',
-      'Weight': '250g'
-    },
-    tags: ['audio', 'wireless', 'premium'],
-    isFeatured: true
+      'Material': '100% Organic Cotton',
+      'Fit': 'Regular',
+      'Care': 'Machine wash cold',
+      'Origin': 'Ethically sourced'
+    }
   },
   {
     id: '6',
-    name: 'AirPods Pro 2nd Gen',
-    description: 'Enhanced noise cancellation and spatial audio experience.',
-    price: 249,
-    originalPrice: 279,
-    image: 'https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=500',
-    images: ['https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=500'],
-    category: 'Electronics',
-    subcategory: 'Audio',
-    rating: 4.8,
-    reviewCount: 3241,
-    stock: 45,
-    brand: 'Apple',
-    features: ['Active Noise Cancellation', 'Transparency Mode', 'Spatial Audio', 'MagSafe Charging'],
+    name: 'Designer Jeans',
+    price: 89,
+    originalPrice: 129,
+    image: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&h=400&fit=crop',
+    description: 'Premium denim jeans with modern fit and sustainable materials.',
+    category: 'clothing',
+    brand: 'DenimCraft',
+    rating: 4.6,
+    reviewCount: 445,
+    stock: 75,
+    isFeatured: true,
+    isNew: true,
+    features: [
+      'Sustainable denim',
+      'Stretch comfort',
+      'Fade resistant',
+      'Classic five-pocket design'
+    ],
     specifications: {
-      'Driver': 'Custom high-excursion',
-      'Battery': '6hrs + 30hrs with case',
-      'Connectivity': 'Bluetooth 5.3',
-      'Weight': '5.3g each'
-    },
-    tags: ['wireless', 'earbuds', 'apple'],
-    discount: 11
+      'Material': '98% Cotton, 2% Elastane',
+      'Wash': 'Dark indigo',
+      'Fit': 'Slim fit',
+      'Length': '32" inseam'
+    }
   },
-  // Fashion - Clothing
+
+  // Books
   {
     id: '7',
-    name: 'Levi\'s 501 Original Jeans',
-    description: 'The original blue jean since 1873. Straight fit with button fly.',
-    price: 89,
-    image: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=500',
-    images: ['https://images.unsplash.com/photo-1542272604-787c3835535d?w=500'],
-    category: 'Fashion',
-    subcategory: 'Jeans',
-    rating: 4.4,
-    reviewCount: 2341,
-    stock: 78,
-    brand: 'Levi\'s',
-    features: ['100% Cotton', 'Straight Fit', 'Button Fly', 'Classic 5-Pocket'],
-    specifications: {
-      'Material': '100% Cotton',
-      'Fit': 'Straight',
-      'Rise': 'Mid',
-      'Leg Opening': '16.5"'
-    },
-    tags: ['classic', 'denim', 'casual']
-  },
-  {
-    id: '8',
-    name: 'Nike Air Force 1',
-    description: 'The classic basketball shoe that changed the game forever.',
-    price: 110,
-    image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500',
-    images: ['https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500'],
-    category: 'Fashion',
-    subcategory: 'Shoes',
-    rating: 4.6,
-    reviewCount: 5432,
-    stock: 120,
-    brand: 'Nike',
-    features: ['Air Cushioning', 'Leather Upper', 'Rubber Outsole', 'Classic Design'],
-    specifications: {
-      'Material': 'Leather and synthetic',
-      'Sole': 'Rubber',
-      'Technology': 'Air cushioning',
-      'Fit': 'True to size'
-    },
-    tags: ['basketball', 'classic', 'streetwear'],
-    isFeatured: true
-  },
-  {
-    id: '9',
-    name: 'Adidas Ultraboost 22',
-    description: 'Revolutionary running shoe with incredible energy return.',
-    price: 190,
-    originalPrice: 220,
-    image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500',
-    images: ['https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500'],
-    category: 'Fashion',
-    subcategory: 'Shoes',
-    rating: 4.7,
-    reviewCount: 1876,
-    stock: 65,
-    brand: 'Adidas',
-    features: ['Boost Technology', 'Primeknit Upper', 'Continental Rubber', 'Energy Return'],
-    specifications: {
-      'Material': 'Primeknit textile',
-      'Sole': 'Continental rubber',
-      'Technology': 'Boost midsole',
-      'Drop': '10mm'
-    },
-    tags: ['running', 'performance', 'comfort'],
-    discount: 14
-  },
-  // Electronics - Gaming
-  {
-    id: '10',
-    name: 'PlayStation 5',
-    description: 'Next-gen gaming console with lightning-fast loading and haptic feedback.',
-    price: 499,
-    image: 'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=500',
-    images: ['https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=500'],
-    category: 'Electronics',
-    subcategory: 'Gaming',
-    rating: 4.9,
-    reviewCount: 8765,
-    stock: 8,
-    brand: 'Sony',
-    features: ['4K Gaming', 'Ray Tracing', 'SSD Storage', 'Haptic Feedback'],
-    specifications: {
-      'CPU': 'AMD Zen 2',
-      'GPU': 'AMD RDNA 2',
-      'Storage': '825GB SSD',
-      'Resolution': 'Up to 4K'
-    },
-    tags: ['gaming', 'console', 'entertainment'],
-    isFeatured: true
-  },
-  // Continue with more products...
-  {
-    id: '11',
-    name: 'Nintendo Switch OLED',
-    description: 'Portable gaming console with vibrant OLED screen.',
-    price: 349,
-    image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=500',
-    images: ['https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=500'],
-    category: 'Electronics',
-    subcategory: 'Gaming',
+    name: 'The Art of Programming',
+    price: 45,
+    image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=400&fit=crop',
+    description: 'Comprehensive guide to modern programming techniques and best practices.',
+    category: 'books',
+    brand: 'TechPress',
     rating: 4.8,
-    reviewCount: 4532,
-    stock: 25,
-    brand: 'Nintendo',
-    features: ['OLED Display', 'Portable Gaming', 'TV Mode', 'Joy-Con Controllers'],
+    reviewCount: 678,
+    stock: 50,
+    isFeatured: false,
+    isNew: true,
+    features: [
+      '500+ pages',
+      'Code examples',
+      'Industry insights',
+      'Expert interviews'
+    ],
     specifications: {
-      'Display': '7" OLED',
-      'Storage': '64GB',
-      'Battery': 'Up to 9 hours',
-      'Resolution': '1280x720 handheld'
-    },
-    tags: ['portable', 'family', 'nintendo'],
-    isNew: true
+      'Pages': '512',
+      'Publisher': 'TechPress',
+      'Language': 'English',
+      'ISBN': '978-1234567890'
+    }
   },
+
   // Home & Garden
   {
-    id: '12',
-    name: 'Dyson V15 Detect',
-    description: 'Advanced cordless vacuum with laser dust detection.',
-    price: 749,
-    originalPrice: 849,
-    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500',
-    images: ['https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500'],
-    category: 'Home & Garden',
-    subcategory: 'Appliances',
-    rating: 4.6,
-    reviewCount: 2134,
-    stock: 18,
-    brand: 'Dyson',
-    features: ['Laser Detection', 'HEPA Filtration', 'LCD Screen', '60min Runtime'],
+    id: '8',
+    name: 'Ceramic Plant Pot Set',
+    price: 35,
+    image: 'https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=400&h=400&fit=crop',
+    description: 'Beautiful ceramic pots perfect for indoor plants and home decoration.',
+    category: 'home-garden',
+    brand: 'GardenLife',
+    rating: 4.3,
+    reviewCount: 156,
+    stock: 80,
+    isFeatured: false,
+    isNew: false,
+    features: [
+      'Drainage holes',
+      'Saucer included',
+      'Glazed finish',
+      'Set of 3 sizes'
+    ],
     specifications: {
-      'Battery': '60 minutes',
-      'Filtration': 'HEPA',
-      'Capacity': '0.77L',
-      'Weight': '3.0kg'
-    },
-    tags: ['cleaning', 'cordless', 'technology'],
-    discount: 12
+      'Material': 'Ceramic',
+      'Sizes': '4", 6", 8"',
+      'Color': 'White/Natural',
+      'Drainage': 'Yes'
+    }
+  },
+
+  // Sports & Outdoors
+  {
+    id: '9',
+    name: 'Professional Yoga Mat',
+    price: 59,
+    image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=400&fit=crop',
+    description: 'Premium yoga mat with superior grip and cushioning for all yoga practices.',
+    category: 'sports-outdoors',
+    brand: 'YogaPro',
+    rating: 4.7,
+    reviewCount: 334,
+    stock: 45,
+    isFeatured: true,
+    isNew: false,
+    features: [
+      'Non-slip surface',
+      'Extra thick cushioning',
+      'Eco-friendly materials',
+      'Carrying strap included'
+    ],
+    specifications: {
+      'Thickness': '6mm',
+      'Size': '72" x 24"',
+      'Material': 'TPE',
+      'Weight': '1.2kg'
+    }
+  },
+
+  // Beauty & Health
+  {
+    id: '10',
+    name: 'Organic Face Serum',
+    price: 49,
+    originalPrice: 69,
+    image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&h=400&fit=crop',
+    description: 'Hydrating face serum with natural ingredients for healthy, glowing skin.',
+    category: 'beauty-health',
+    brand: 'PureSkin',
+    rating: 4.6,
+    reviewCount: 289,
+    stock: 30,
+    isFeatured: false,
+    isNew: true,
+    features: [
+      'Organic ingredients',
+      'Anti-aging properties',
+      'Suitable for all skin types',
+      'Cruelty-free'
+    ],
+    specifications: {
+      'Volume': '30ml',
+      'Key Ingredients': 'Hyaluronic Acid, Vitamin C',
+      'Skin Type': 'All types',
+      'Application': 'Morning & Evening'
+    }
+  },
+
+  // Additional 30 products
+  {
+    id: '11',
+    name: 'Premium Coffee Maker',
+    price: 199,
+    originalPrice: 249,
+    image: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=400&h=400&fit=crop',
+    description: 'Professional-grade coffee maker for the perfect brew every time.',
+    category: 'electronics',
+    brand: 'BrewMaster',
+    rating: 4.8,
+    reviewCount: 512,
+    stock: 20,
+    isFeatured: true,
+    isNew: false,
+    features: ['Programmable', 'Built-in grinder', 'Thermal carafe', '12-cup capacity'],
+    specifications: {
+      'Capacity': '12 cups',
+      'Power': '1400W',
+      'Timer': '24-hour programmable',
+      'Material': 'Stainless steel'
+    }
+  },
+  {
+    id: '12',
+    name: 'Leather Crossbody Bag',
+    price: 129,
+    image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop',
+    description: 'Elegant leather crossbody bag perfect for everyday use.',
+    category: 'clothing',
+    brand: 'LuxeLeather',
+    rating: 4.5,
+    reviewCount: 298,
+    stock: 40,
+    isFeatured: false,
+    isNew: true,
+    features: ['Genuine leather', 'Adjustable strap', 'Multiple compartments', 'RFID protection'],
+    specifications: {
+      'Material': '100% Genuine Leather',
+      'Dimensions': '10" x 8" x 3"',
+      'Strap': 'Adjustable 28"-52"',
+      'Closure': 'Magnetic snap'
+    }
   },
   {
     id: '13',
-    name: 'KitchenAid Stand Mixer',
-    description: 'Professional-grade stand mixer for all your baking needs.',
-    price: 399,
-    image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=500',
-    images: ['https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=500'],
-    category: 'Home & Garden',
-    subcategory: 'Kitchen',
-    rating: 4.8,
-    reviewCount: 3456,
-    stock: 32,
-    brand: 'KitchenAid',
-    features: ['10 Speeds', 'Tilt-Head Design', 'Stainless Steel Bowl', 'Multiple Attachments'],
+    name: 'Wireless Gaming Mouse',
+    price: 89,
+    image: 'https://images.unsplash.com/photo-1527814050087-3793815479db?w=400&h=400&fit=crop',
+    description: 'High-performance wireless gaming mouse with RGB lighting.',
+    category: 'electronics',
+    brand: 'GameTech',
+    rating: 4.7,
+    reviewCount: 445,
+    stock: 55,
+    isFeatured: false,
+    isNew: false,
+    features: ['16000 DPI sensor', 'RGB lighting', '70-hour battery', 'Ergonomic design'],
     specifications: {
-      'Capacity': '4.5 quarts',
-      'Power': '275 watts',
-      'Speeds': '10',
-      'Material': 'Die-cast zinc'
-    },
-    tags: ['baking', 'kitchen', 'professional'],
-    isFeatured: true
+      'DPI': '16000',
+      'Battery': '70 hours',
+      'Connection': '2.4GHz wireless',
+      'Weight': '85g'
+    }
   },
-  // Beauty & Personal Care
   {
     id: '14',
-    name: 'Dyson Airwrap',
-    description: 'Multi-styler for all hair types without extreme heat damage.',
-    price: 599,
-    image: 'https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=500',
-    images: ['https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=500'],
-    category: 'Beauty',
-    subcategory: 'Hair Care',
-    rating: 4.5,
-    reviewCount: 2876,
-    stock: 22,
-    brand: 'Dyson',
-    features: ['No Heat Damage', 'Multiple Attachments', 'Coanda Effect', 'Fast Drying'],
+    name: 'Organic Green Tea',
+    price: 24,
+    image: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&h=400&fit=crop',
+    description: 'Premium organic green tea with antioxidants and natural flavor.',
+    category: 'beauty-health',
+    brand: 'TeaGarden',
+    rating: 4.4,
+    reviewCount: 167,
+    stock: 90,
+    isFeatured: false,
+    isNew: false,
+    features: ['Organic certified', 'Rich in antioxidants', '50 tea bags', 'Ethically sourced'],
     specifications: {
-      'Heat Settings': '3',
-      'Speed Settings': '3',
-      'Attachments': '6',
-      'Cord Length': '2.62m'
-    },
-    tags: ['hair', 'styling', 'professional'],
-    isNew: true
+      'Quantity': '50 tea bags',
+      'Origin': 'China',
+      'Caffeine': 'Low',
+      'Certification': 'USDA Organic'
+    }
   },
   {
     id: '15',
-    name: 'Fenty Beauty Foundation',
-    description: 'Award-winning foundation with 40 inclusive shades.',
-    price: 39,
-    image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=500',
-    images: ['https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=500'],
-    category: 'Beauty',
-    subcategory: 'Makeup',
-    rating: 4.7,
-    reviewCount: 8765,
-    stock: 85,
-    brand: 'Fenty Beauty',
-    features: ['40 Shades', 'Long-Wearing', 'Buildable Coverage', 'All Skin Types'],
+    name: 'Memory Foam Pillow',
+    price: 69,
+    originalPrice: 89,
+    image: 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=400&h=400&fit=crop',
+    description: 'Contoured memory foam pillow for optimal neck and spine support.',
+    category: 'home-garden',
+    brand: 'SleepWell',
+    rating: 4.6,
+    reviewCount: 378,
+    stock: 35,
+    isFeatured: true,
+    isNew: false,
+    features: ['Memory foam', 'Cooling gel layer', 'Hypoallergenic', 'Machine washable cover'],
     specifications: {
-      'Coverage': 'Medium to Full',
-      'Finish': 'Natural',
-      'Volume': '32ml',
-      'Formula': 'Oil-free'
-    },
-    tags: ['makeup', 'inclusive', 'long-wearing'],
-    isFeatured: true
+      'Size': 'Standard (20" x 26")',
+      'Material': 'Memory foam with gel',
+      'Cover': 'Bamboo fiber',
+      'Firmness': 'Medium'
+    }
   },
-  // Sports & Outdoor
   {
     id: '16',
-    name: 'Yeti Rambler Tumbler',
-    description: 'Insulated stainless steel tumbler that keeps drinks perfect.',
-    price: 35,
-    image: 'https://images.unsplash.com/photo-1544966503-7cc5ac882d5d?w=500',
-    images: ['https://images.unsplash.com/photo-1544966503-7cc5ac882d5d?w=500'],
-    category: 'Sports & Outdoor',
-    subcategory: 'Drinkware',
+    name: 'Stainless Steel Water Bottle',
+    price: 34,
+    image: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=400&h=400&fit=crop',
+    description: 'Insulated stainless steel water bottle that keeps drinks cold for 24 hours.',
+    category: 'sports-outdoors',
+    brand: 'HydroFlask',
     rating: 4.8,
-    reviewCount: 5432,
-    stock: 120,
-    brand: 'Yeti',
-    features: ['Double-Wall Insulation', 'MagSlider Lid', 'Dishwasher Safe', 'No Sweat Design'],
+    reviewCount: 623,
+    stock: 85,
+    isFeatured: false,
+    isNew: true,
+    features: ['Double-wall insulation', 'Leak-proof lid', 'BPA-free', '32oz capacity'],
     specifications: {
-      'Capacity': '20oz',
-      'Material': '18/8 Stainless Steel',
+      'Capacity': '32oz (946ml)',
+      'Material': 'Stainless steel',
       'Insulation': 'Double-wall vacuum',
-      'Dimensions': '6.875" H x 3.5" W'
-    },
-    tags: ['outdoor', 'insulated', 'durable']
+      'Temperature': 'Cold 24hrs, Hot 12hrs'
+    }
   },
   {
     id: '17',
-    name: 'Patagonia Down Jacket',
-    description: 'Lightweight, packable down jacket for outdoor adventures.',
-    price: 229,
-    originalPrice: 279,
-    image: 'https://images.unsplash.com/photo-1544966503-7cc5ac882d5d?w=500',
-    images: ['https://images.unsplash.com/photo-1544966503-7cc5ac882d5d?w=500'],
-    category: 'Sports & Outdoor',
-    subcategory: 'Clothing',
-    rating: 4.7,
-    reviewCount: 1876,
-    stock: 45,
-    brand: 'Patagonia',
-    features: ['800-Fill Down', 'Packable', 'Water-Resistant', 'Recycled Materials'],
+    name: 'Wireless Charging Pad',
+    price: 45,
+    image: 'https://images.unsplash.com/photo-1609867882043-b46fa9fadc36?w=400&h=400&fit=crop',
+    description: 'Fast wireless charging pad compatible with all Qi-enabled devices.',
+    category: 'electronics',
+    brand: 'ChargeTech',
+    rating: 4.3,
+    reviewCount: 234,
+    stock: 70,
+    isFeatured: false,
+    isNew: false,
+    features: ['15W fast charging', 'LED indicator', 'Non-slip base', 'Overcharge protection'],
     specifications: {
-      'Fill': '800-fill-power down',
-      'Weight': '285g',
-      'Material': 'Recycled polyester',
-      'Features': 'Packable into pocket'
-    },
-    tags: ['outdoor', 'sustainable', 'warm'],
-    discount: 18
+      'Power': '15W max',
+      'Compatibility': 'Qi-enabled devices',
+      'Input': 'USB-C',
+      'Size': '4" diameter'
+    }
   },
-  // Books & Media
   {
     id: '18',
-    name: 'Kindle Paperwhite',
-    description: 'Waterproof e-reader with 6.8" display and adjustable warm light.',
-    price: 139,
-    image: 'https://images.unsplash.com/photo-1481667641078-8f47b7b1e2b9?w=500',
-    images: ['https://images.unsplash.com/photo-1481667641078-8f47b7b1e2b9?w=500'],
-    category: 'Books & Media',
-    subcategory: 'E-readers',
-    rating: 4.6,
-    reviewCount: 12543,
-    stock: 67,
-    brand: 'Amazon',
-    features: ['Waterproof', 'Adjustable Warm Light', 'Weeks of Battery', 'Glare-Free'],
+    name: 'Minimalist Desk Lamp',
+    price: 79,
+    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop',
+    description: 'Modern LED desk lamp with adjustable brightness and color temperature.',
+    category: 'home-garden',
+    brand: 'LightCraft',
+    rating: 4.5,
+    reviewCount: 189,
+    stock: 45,
+    isFeatured: false,
+    isNew: true,
+    features: ['Touch control', 'USB charging port', 'Eye-care LED', '3 color modes'],
     specifications: {
-      'Display': '6.8" 300 ppi',
-      'Storage': '8GB',
-      'Battery': 'Up to 10 weeks',
-      'Connectivity': 'Wi-Fi'
-    },
-    tags: ['reading', 'portable', 'digital']
+      'Power': '12W LED',
+      'Color Temperature': '3000K-6500K',
+      'USB Port': '5V/1A',
+      'Adjustment': '180° flexible arm'
+    }
   },
-  // Continue with more products to reach 50...
   {
     id: '19',
-    name: 'Apple Watch Series 9',
-    description: 'Advanced smartwatch with health tracking and fitness features.',
-    price: 399,
-    image: 'https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?w=500',
-    images: ['https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?w=500'],
-    category: 'Electronics',
-    subcategory: 'Wearables',
+    name: 'Running Shoes',
+    price: 119,
+    originalPrice: 159,
+    image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop',
+    description: 'Lightweight running shoes with advanced cushioning technology.',
+    category: 'sports-outdoors',
+    brand: 'RunTech',
     rating: 4.7,
-    reviewCount: 6789,
-    stock: 34,
-    brand: 'Apple',
-    features: ['Health Tracking', 'GPS', 'Water Resistant', 'App Store'],
+    reviewCount: 567,
+    stock: 60,
+    isFeatured: true,
+    isNew: false,
+    features: ['Breathable mesh', 'Responsive foam', 'Rubber outsole', 'Reflective details'],
     specifications: {
-      'Display': '45mm Retina',
-      'Battery': '18 hours',
-      'Storage': '64GB',
-      'Connectivity': 'Wi-Fi + Cellular'
-    },
-    tags: ['smartwatch', 'health', 'fitness'],
-    isNew: true
+      'Upper': 'Engineered mesh',
+      'Midsole': 'EVA foam',
+      'Drop': '10mm',
+      'Weight': '280g (size 9)'
+    }
   },
   {
     id: '20',
-    name: 'Samsung 4K Smart TV',
-    description: '55" QLED 4K Smart TV with Quantum Dot technology.',
-    price: 799,
-    originalPrice: 999,
-    image: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=500',
-    images: ['https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=500'],
-    category: 'Electronics',
-    subcategory: 'TV & Video',
-    rating: 4.5,
-    reviewCount: 2345,
-    stock: 12,
-    brand: 'Samsung',
-    features: ['QLED Technology', 'Smart TV', 'HDR10+', 'Gaming Mode'],
+    name: 'Silk Scarf',
+    price: 89,
+    image: 'https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=400&h=400&fit=crop',
+    description: 'Luxurious silk scarf with hand-painted artistic design.',
+    category: 'clothing',
+    brand: 'SilkArt',
+    rating: 4.6,
+    reviewCount: 123,
+    stock: 25,
+    isFeatured: false,
+    isNew: true,
+    features: ['100% mulberry silk', 'Hand-painted design', 'Rolled edges', 'Gift packaging'],
     specifications: {
-      'Size': '55 inches',
-      'Resolution': '4K UHD',
-      'Technology': 'QLED',
-      'Smart Platform': 'Tizen'
-    },
-    tags: ['entertainment', 'smart', '4k'],
-    discount: 20
-  }
-  // Add 30 more products following the same pattern...
-];
-
-export const categories = [
-  { id: 'electronics', name: 'Electronics', icon: '📱' },
-  { id: 'fashion', name: 'Fashion', icon: '👕' },
-  { id: 'home-garden', name: 'Home & Garden', icon: '🏠' },
-  { id: 'beauty', name: 'Beauty', icon: '💄' },
-  { id: 'sports-outdoor', name: 'Sports & Outdoor', icon: '⚽' },
-  { id: 'books-media', name: 'Books & Media', icon: '📚' }
-];
-
-export const banners = [
-  {
-    id: '1',
-    title: 'Summer Sale',
-    subtitle: 'Up to 70% off on selected items',
-    image: 'https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?w=1200',
-    cta: 'Shop Now',
-    link: '/products?sale=true'
+      'Material': '100% Mulberry Silk',
+      'Size': '35" x 35"',
+      'Weight': '65g',
+      'Care': 'Dry clean only'
+    }
   },
   {
-    id: '2',
-    title: 'New Arrivals',
-    subtitle: 'Discover the latest trends',
-    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200',
-    cta: 'Explore',
-    link: '/products?new=true'
+    id: '21',
+    name: 'Portable Power Bank',
+    price: 59,
+    image: 'https://images.unsplash.com/photo-1609592806037-bef2bb65de83?w=400&h=400&fit=crop',
+    description: 'High-capacity portable charger with fast charging technology.',
+    category: 'electronics',
+    brand: 'PowerMax',
+    rating: 4.4,
+    reviewCount: 445,
+    stock: 80,
+    isFeatured: false,
+    isNew: false,
+    features: ['20000mAh capacity', 'PD fast charging', 'LED display', 'Multiple ports'],
+    specifications: {
+      'Capacity': '20000mAh',
+      'Input': 'USB-C PD 18W',
+      'Output': 'USB-A & USB-C',
+      'Weight': '420g'
+    }
   },
   {
-    id: '3',
-    title: 'Tech Week',
-    subtitle: 'Latest gadgets at amazing prices',
-    image: 'https://images.unsplash.com/photo-1518614994439-8f3e82b2e8f5?w=1200',
-    cta: 'Shop Tech',
-    link: '/products?category=electronics'
+    id: '22',
+    name: 'Essential Oil Diffuser',
+    price: 65,
+    image: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=400&fit=crop',
+    description: 'Ultrasonic essential oil diffuser with color-changing LED lights.',
+    category: 'home-garden',
+    brand: 'AromaLife',
+    rating: 4.5,
+    reviewCount: 298,
+    stock: 40,
+    isFeatured: false,
+    isNew: false,
+    features: ['7 LED colors', 'Timer function', 'Auto shut-off', '300ml capacity'],
+    specifications: {
+      'Capacity': '300ml',
+      'Runtime': '10 hours max',
+      'Coverage': '1076 sq ft',
+      'Material': 'BPA-free plastic'
+    }
+  },
+  {
+    id: '23',
+    name: 'Bluetooth Earbuds',
+    price: 149,
+    originalPrice: 199,
+    image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400&h=400&fit=crop',
+    description: 'True wireless earbuds with active noise cancellation and premium sound.',
+    category: 'electronics',
+    brand: 'AudioPro',
+    rating: 4.6,
+    reviewCount: 789,
+    stock: 55,
+    isFeatured: true,
+    isNew: true,
+    features: ['Active noise cancellation', 'Touch controls', '6-hour battery', 'Wireless charging case'],
+    specifications: {
+      'Battery': '6hrs + 24hrs case',
+      'Driver': '12mm dynamic',
+      'Codec': 'AAC, SBC',
+      'Water Rating': 'IPX4'
+    }
+  },
+  {
+    id: '24',
+    name: 'Indoor Plant Collection',
+    price: 95,
+    image: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=400&fit=crop',
+    description: 'Curated collection of low-maintenance indoor plants perfect for beginners.',
+    category: 'home-garden',
+    brand: 'PlantLife',
+    rating: 4.7,
+    reviewCount: 234,
+    stock: 30,
+    isFeatured: false,
+    isNew: true,
+    features: ['Set of 4 plants', 'Care instructions', 'Decorative pots', 'Low maintenance'],
+    specifications: {
+      'Plants': 'Snake Plant, Pothos, ZZ Plant, Spider Plant',
+      'Pot Size': '4 inches',
+      'Light': 'Low to medium',
+      'Watering': 'Weekly'
+    }
+  },
+  {
+    id: '25',
+    name: 'Smart Thermostat',
+    price: 199,
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop',
+    description: 'Wi-Fi enabled smart thermostat with energy-saving features.',
+    category: 'electronics',
+    brand: 'SmartHome',
+    rating: 4.8,
+    reviewCount: 456,
+    stock: 25,
+    isFeatured: false,
+    isNew: false,
+    features: ['Wi-Fi connectivity', 'Voice control', 'Energy reports', 'Smartphone app'],
+    specifications: {
+      'Compatibility': 'Most HVAC systems',
+      'Display': '3.5" color touchscreen',
+      'Connectivity': 'Wi-Fi, Bluetooth',
+      'Sensors': 'Temperature, humidity, occupancy'
+    }
+  },
+  {
+    id: '26',
+    name: 'Vintage Leather Jacket',
+    price: 189,
+    originalPrice: 249,
+    image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=400&fit=crop',
+    description: 'Classic vintage-style leather jacket with premium craftsmanship.',
+    category: 'clothing',
+    brand: 'Heritage',
+    rating: 4.9,
+    reviewCount: 167,
+    stock: 15,
+    isFeatured: true,
+    isNew: false,
+    features: ['Genuine leather', 'Vintage styling', 'YKK zippers', 'Interior pockets'],
+    specifications: {
+      'Material': '100% Genuine Leather',
+      'Lining': 'Polyester',
+      'Hardware': 'Antique brass',
+      'Origin': 'Handcrafted'
+    }
+  },
+  {
+    id: '27',
+    name: 'Resistance Band Set',
+    price: 39,
+    image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop',
+    description: 'Complete resistance band set for strength training and rehabilitation.',
+    category: 'sports-outdoors',
+    brand: 'FitBand',
+    rating: 4.5,
+    reviewCount: 345,
+    stock: 75,
+    isFeatured: false,
+    isNew: false,
+    features: ['5 resistance levels', 'Door anchor', 'Carrying bag', 'Exercise guide'],
+    specifications: {
+      'Resistance Levels': 'Light to Extra Heavy',
+      'Material': 'Natural latex',
+      'Handles': 'Foam grip',
+      'Accessories': 'Door anchor, ankle straps'
+    }
+  },
+  {
+    id: '28',
+    name: 'Ceramic Dinner Set',
+    price: 129,
+    image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=400&fit=crop',
+    description: 'Elegant 16-piece ceramic dinner set for modern dining.',
+    category: 'home-garden',
+    brand: 'TableCraft',
+    rating: 4.6,
+    reviewCount: 189,
+    stock: 20,
+    isFeatured: false,
+    isNew: true,
+    features: ['16-piece set', 'Microwave safe', 'Dishwasher safe', 'Modern design'],
+    specifications: {
+      'Pieces': '4 dinner plates, 4 salad plates, 4 bowls, 4 mugs',
+      'Material': 'Stoneware',
+      'Finish': 'Reactive glaze',
+      'Care': 'Dishwasher & microwave safe'
+    }
+  },
+  {
+    id: '29',
+    name: 'Vitamin C Serum',
+    price: 39,
+    originalPrice: 55,
+    image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&h=400&fit=crop',
+    description: 'Brightening vitamin C serum for radiant and youthful skin.',
+    category: 'beauty-health',
+    brand: 'GlowSkin',
+    rating: 4.7,
+    reviewCount: 567,
+    stock: 45,
+    isFeatured: false,
+    isNew: false,
+    features: ['20% Vitamin C', 'Hyaluronic acid', 'Anti-aging', 'Dermatologist tested'],
+    specifications: {
+      'Volume': '30ml',
+      'Key Ingredients': 'Vitamin C, Hyaluronic Acid, Vitamin E',
+      'pH Level': '3.5-4.0',
+      'Shelf Life': '2 years'
+    }
+  },
+  {
+    id: '30',
+    name: 'Mechanical Keyboard',
+    price: 159,
+    image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=400&fit=crop',
+    description: 'Professional mechanical keyboard with RGB backlighting and custom switches.',
+    category: 'electronics',
+    brand: 'KeyCraft',
+    rating: 4.8,
+    reviewCount: 423,
+    stock: 30,
+    isFeatured: false,
+    isNew: true,
+    features: ['Mechanical switches', 'RGB backlighting', 'Programmable keys', 'Detachable cable'],
+    specifications: {
+      'Switch Type': 'Cherry MX Blue',
+      'Layout': 'Full-size (104 keys)',
+      'Backlighting': 'RGB per-key',
+      'Connection': 'USB-C detachable'
+    }
+  },
+  {
+    id: '31',
+    name: 'Bamboo Cutting Board Set',
+    price: 49,
+    image: 'https://images.unsplash.com/photo-1594736797933-d0c7e2e5d14c?w=400&h=400&fit=crop',
+    description: 'Sustainable bamboo cutting board set with different sizes for all kitchen needs.',
+    category: 'home-garden',
+    brand: 'EcoKitchen',
+    rating: 4.4,
+    reviewCount: 234,
+    stock: 65,
+    isFeatured: false,
+    isNew: false,
+    features: ['Set of 3 sizes', 'Antimicrobial bamboo', 'Juice grooves', 'Easy storage'],
+    specifications: {
+      'Material': '100% Bamboo',
+      'Sizes': 'Large 18"×12", Medium 14"×10", Small 10"×8"',
+      'Thickness': '3/4 inch',
+      'Care': 'Hand wash recommended'
+    }
+  },
+  {
+    id: '32',
+    name: 'Protein Powder',
+    price: 59,
+    image: 'https://images.unsplash.com/photo-1593095948071-474c5cc2989d?w=400&h=400&fit=crop',
+    description: 'Premium whey protein powder with natural flavors and no artificial additives.',
+    category: 'beauty-health',
+    brand: 'FitNutrition',
+    rating: 4.6,
+    reviewCount: 789,
+    stock: 90,
+    isFeatured: false,
+    isNew: false,
+    features: ['25g protein per serving', 'No artificial additives', 'Easy mixing', '30 servings'],
+    specifications: {
+      'Protein per serving': '25g',
+      'Flavor': 'Vanilla',
+      'Servings': '30',
+      'Ingredients': 'Whey protein isolate, natural flavors'
+    }
+  },
+  {
+    id: '33',
+    name: 'Smart Light Bulbs',
+    price: 79,
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop',
+    description: 'Wi-Fi enabled smart LED bulbs with millions of colors and voice control.',
+    category: 'electronics',
+    brand: 'BrightTech',
+    rating: 4.5,
+    reviewCount: 345,
+    stock: 50,
+    isFeatured: false,
+    isNew: true,
+    features: ['16 million colors', 'Voice control', 'Energy efficient', 'Pack of 4'],
+    specifications: {
+      'Wattage': '9W (60W equivalent)',
+      'Connectivity': 'Wi-Fi 2.4GHz',
+      'Lifespan': '25,000 hours',
+      'Compatibility': 'Alexa, Google Assistant'
+    }
+  },
+  {
+    id: '34',
+    name: 'Hiking Backpack',
+    price: 149,
+    originalPrice: 189,
+    image: 'https://images.unsplash.com/photo-1622260614153-03223fb72052?w=400&h=400&fit=crop',
+    description: 'Durable hiking backpack with multiple compartments and hydration system.',
+    category: 'sports-outdoors',
+    brand: 'TrailGear',
+    rating: 4.7,
+    reviewCount: 267,
+    stock: 35,
+    isFeatured: true,
+    isNew: false,
+    features: ['40L capacity', 'Hydration compatible', 'Rain cover', 'Adjustable straps'],
+    specifications: {
+      'Capacity': '40 liters',
+      'Weight': '2.1kg',
+      'Material': 'Ripstop nylon',
+      'Dimensions': '55×35×25cm'
+    }
+  },
+  {
+    id: '35',
+    name: 'Cashmere Sweater',
+    price: 199,
+    originalPrice: 299,
+    image: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=400&h=400&fit=crop',
+    description: 'Luxurious cashmere sweater with timeless design and superior comfort.',
+    category: 'clothing',
+    brand: 'LuxeWear',
+    rating: 4.8,
+    reviewCount: 145,
+    stock: 20,
+    isFeatured: true,
+    isNew: true,
+    features: ['100% cashmere', 'Classic fit', 'Ribbed cuffs', 'Machine washable'],
+    specifications: {
+      'Material': '100% Cashmere',
+      'Weight': 'Lightweight',
+      'Fit': 'Classic',
+      'Care': 'Machine wash cold, lay flat to dry'
+    }
+  },
+  {
+    id: '36',
+    name: 'Air Purifier',
+    price: 229,
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop',
+    description: 'HEPA air purifier with smart sensors and quiet operation for clean indoor air.',
+    category: 'home-garden',
+    brand: 'PureAir',
+    rating: 4.6,
+    reviewCount: 456,
+    stock: 25,
+    isFeatured: false,
+    isNew: false,
+    features: ['True HEPA filter', 'Smart sensors', 'Quiet operation', 'App control'],
+    specifications: {
+      'Coverage': '400 sq ft',
+      'Filtration': 'True HEPA + Carbon',
+      'Noise Level': '24-55 dB',
+      'Power': '45W'
+    }
+  },
+  {
+    id: '37',
+    name: 'Gaming Chair',
+    price: 299,
+    originalPrice: 399,
+    image: 'https://images.unsplash.com/photo-1541558869434-2840d308329a?w=400&h=400&fit=crop',
+    description: 'Ergonomic gaming chair with lumbar support and premium materials.',
+    category: 'home-garden',
+    brand: 'GameSeat',
+    rating: 4.7,
+    reviewCount: 234,
+    stock: 15,
+    isFeatured: false,
+    isNew: true,
+    features: ['Lumbar support', 'Adjustable armrests', 'PU leather', '360° swivel'],
+    specifications: {
+      'Material': 'PU Leather + Memory foam',
+      'Weight Capacity': '300 lbs',
+      'Height Adjustment': '3.5 inches',
+      'Warranty': '3 years'
+    }
+  },
+  {
+    id: '38',
+    name: 'Wireless Earphones',
+    price: 89,
+    image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400&h=400&fit=crop',
+    description: 'Lightweight wireless earphones with superior sound quality and long battery life.',
+    category: 'electronics',
+    brand: 'SoundTech',
+    rating: 4.4,
+    reviewCount: 567,
+    stock: 60,
+    isFeatured: false,
+    isNew: false,
+    features: ['8-hour battery', 'IPX7 waterproof', 'Touch controls', 'Quick charge'],
+    specifications: {
+      'Battery': '8hrs + 24hrs case',
+      'Driver': '10mm',
+      'Water Rating': 'IPX7',
+      'Charging': 'USB-C + Wireless'
+    }
+  },
+  {
+    id: '39',
+    name: 'Facial Cleanser',
+    price: 29,
+    image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&h=400&fit=crop',
+    description: 'Gentle facial cleanser suitable for all skin types with natural ingredients.',
+    category: 'beauty-health',
+    brand: 'ClearSkin',
+    rating: 4.5,
+    reviewCount: 423,
+    stock: 80,
+    isFeatured: false,
+    isNew: false,
+    features: ['All skin types', 'Natural ingredients', 'pH balanced', 'Sulfate-free'],
+    specifications: {
+      'Volume': '150ml',
+      'pH Level': '5.5',
+      'Key Ingredients': 'Aloe vera, Green tea extract',
+      'Type': 'Gel cleanser'
+    }
+  },
+  {
+    id: '40',
+    name: 'Kitchen Scale',
+    price: 45,
+    image: 'https://images.unsplash.com/photo-1594736797933-d0c7e1e5d14c?w=400&h=400&fit=crop',
+    description: 'Digital kitchen scale with precise measurements and sleek design.',
+    category: 'home-garden',
+    brand: 'PrecisionCook',
+    rating: 4.6,
+    reviewCount: 289,
+    stock: 45,
+    isFeatured: false,
+    isNew: false,
+    features: ['Digital display', '11 lb capacity', 'Tare function', 'Auto shut-off'],
+    specifications: {
+      'Capacity': '11 lbs (5kg)',
+      'Accuracy': '0.1oz (1g)',
+      'Display': 'LCD backlit',
+      'Power': '2 AAA batteries'
+    }
   }
 ];
