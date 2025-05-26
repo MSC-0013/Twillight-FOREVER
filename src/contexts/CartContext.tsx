@@ -1,5 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useAuth } from './AuthContext';
 
 export interface CartItem {
   id: string;
@@ -32,17 +33,26 @@ export const useCart = () => {
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>([]);
+  const { user } = useAuth();
 
+  // Load cart data based on user
   useEffect(() => {
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      setItems(JSON.parse(savedCart));
+    if (user) {
+      const savedCart = localStorage.getItem(`cart_${user.id}`);
+      if (savedCart) {
+        setItems(JSON.parse(savedCart));
+      }
+    } else {
+      setItems([]);
     }
-  }, []);
+  }, [user]);
 
+  // Save cart data when items change
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(items));
-  }, [items]);
+    if (user) {
+      localStorage.setItem(`cart_${user.id}`, JSON.stringify(items));
+    }
+  }, [items, user]);
 
   const addToCart = (product: Omit<CartItem, 'quantity'>) => {
     setItems(prev => {
@@ -76,6 +86,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const clearCart = () => {
     setItems([]);
+    if (user) {
+      localStorage.removeItem(`cart_${user.id}`);
+    }
   };
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);

@@ -1,5 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useAuth } from './AuthContext';
 
 export interface WishlistItem {
   id: string;
@@ -29,17 +30,26 @@ export const useWishlist = () => {
 
 export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [items, setItems] = useState<WishlistItem[]>([]);
+  const { user } = useAuth();
 
+  // Load wishlist data based on user
   useEffect(() => {
-    const savedWishlist = localStorage.getItem('wishlist');
-    if (savedWishlist) {
-      setItems(JSON.parse(savedWishlist));
+    if (user) {
+      const savedWishlist = localStorage.getItem(`wishlist_${user.id}`);
+      if (savedWishlist) {
+        setItems(JSON.parse(savedWishlist));
+      }
+    } else {
+      setItems([]);
     }
-  }, []);
+  }, [user]);
 
+  // Save wishlist data when items change
   useEffect(() => {
-    localStorage.setItem('wishlist', JSON.stringify(items));
-  }, [items]);
+    if (user) {
+      localStorage.setItem(`wishlist_${user.id}`, JSON.stringify(items));
+    }
+  }, [items, user]);
 
   const addToWishlist = (product: WishlistItem) => {
     setItems(prev => {
@@ -60,6 +70,9 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const clearWishlist = () => {
     setItems([]);
+    if (user) {
+      localStorage.removeItem(`wishlist_${user.id}`);
+    }
   };
 
   const value = {
