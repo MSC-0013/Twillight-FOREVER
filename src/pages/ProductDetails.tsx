@@ -20,7 +20,6 @@ const ProductDetails = () => {
   const { isAuthenticated } = useAuth();
   const { toast } = useToast();
   const [quantity, setQuantity] = useState(1);
-  const [selectedImage, setSelectedImage] = useState(0);
 
   const product = products.find(p => p.id === id);
 
@@ -109,6 +108,23 @@ const ProductDetails = () => {
     .filter(p => p.category === product.category && p.id !== product.id)
     .slice(0, 4);
 
+  // Mock features and specifications for display
+  const productFeatures = [
+    "Premium quality materials",
+    "Durable construction",
+    "Elegant design",
+    "Easy to use",
+    "Long-lasting performance"
+  ];
+
+  const productSpecs = {
+    "Brand": product.brand,
+    "Category": product.category,
+    "Rating": `${product.rating}/5`,
+    "Reviews": `${product.reviewCount} reviews`,
+    "Stock": product.stock > 0 ? "In Stock" : "Out of Stock"
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -121,34 +137,15 @@ const ProductDetails = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-          {/* Product Images */}
+          {/* Product Image */}
           <div className="space-y-4">
             <div className="aspect-square rounded-2xl overflow-hidden bg-white shadow-xl">
               <img
-                src={product.images?.[selectedImage] || product.image}
+                src={product.image}
                 alt={product.name}
                 className="w-full h-full object-cover"
               />
             </div>
-            {product.images && product.images.length > 1 && (
-              <div className="grid grid-cols-4 gap-4">
-                {product.images.map((image, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImage(index)}
-                    className={`aspect-square rounded-xl overflow-hidden border-2 transition-colors ${
-                      selectedImage === index ? 'border-purple-600' : 'border-gray-200'
-                    }`}
-                  >
-                    <img
-                      src={image}
-                      alt={`${product.name} ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
 
           {/* Product Info */}
@@ -192,14 +189,14 @@ const ProductDetails = () => {
             {/* Price */}
             <div className="bg-white rounded-2xl p-8 shadow-lg border-2 border-gray-100">
               <div className="flex items-center gap-4 mb-6">
-                <span className="text-4xl font-bold text-purple-600">${product.price}</span>
+                <span className="text-4xl font-bold text-purple-600">₹{product.price}</span>
                 {product.originalPrice && (
                   <div className="flex flex-col">
                     <span className="text-2xl text-gray-500 line-through">
-                      ${product.originalPrice}
+                      ₹{product.originalPrice}
                     </span>
                     <span className="text-sm text-green-600 font-medium">
-                      Save ${product.originalPrice - product.price}
+                      Save ₹{product.originalPrice - product.price}
                     </span>
                   </div>
                 )}
@@ -284,7 +281,7 @@ const ProductDetails = () => {
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <Truck className="w-5 h-5 text-green-600" />
-                  <span className="text-gray-700">Free shipping on orders over $50</span>
+                  <span className="text-gray-700">Free shipping on orders over ₹500</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Shield className="w-5 h-5 text-blue-600" />
@@ -309,7 +306,7 @@ const ProductDetails = () => {
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Features</h3>
                   <ul className="space-y-2">
-                    {product.features.map((feature, index) => (
+                    {productFeatures.map((feature, index) => (
                       <li key={index} className="flex items-center gap-2 text-gray-700">
                         <span className="w-2 h-2 bg-purple-600 rounded-full"></span>
                         {feature}
@@ -321,7 +318,7 @@ const ProductDetails = () => {
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Specifications</h3>
                   <div className="space-y-3">
-                    {Object.entries(product.specifications).map(([key, value]) => (
+                    {Object.entries(productSpecs).map(([key, value]) => (
                       <div key={key} className="flex justify-between border-b border-gray-100 pb-2">
                         <span className="text-gray-600 font-medium">{key}:</span>
                         <span className="text-gray-900">{value}</span>
@@ -353,7 +350,7 @@ const ProductDetails = () => {
                       <h3 className="font-bold text-lg mb-2 group-hover:text-purple-600 transition-colors line-clamp-2">
                         {relatedProduct.name}
                       </h3>
-                      <p className="text-2xl font-bold text-purple-600">${relatedProduct.price}</p>
+                      <p className="text-2xl font-bold text-purple-600">₹{relatedProduct.price}</p>
                     </CardContent>
                   </Link>
                 </Card>
