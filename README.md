@@ -3,7 +3,7 @@
 Welcome to **FOREVER**, a modern and visually rich frontend webpage built with React, Tailwind CSS, and Framer Motion. It features a stunning animated landing page along with an expandable Admin Dashboard designed for dynamic data management and interface control.
 
 > 🚀 Project Repository: [Twillight-FOREVER](https://github.com/MSC-0013/Twillight-FOREVER)  
-> 🌐 Live Demo: *Coming Soon*
+> 🌐 Live Demo: *(https://twillight-forever.vercel.app/)*
 
 ---
 
