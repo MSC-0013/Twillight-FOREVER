@@ -29,7 +29,7 @@ const Checkout = () => {
     city: '',
     state: '',
     zipCode: '',
-    country: 'United States'
+    country: 'India'
   });
 
   const [paymentInfo, setPaymentInfo] = useState({
@@ -55,7 +55,7 @@ const Checkout = () => {
           city: profileData.city || '',
           state: profileData.state || '',
           zipCode: profileData.zipCode || '',
-          country: 'United States'
+          country: 'India'
         });
       }
     }
@@ -163,7 +163,7 @@ const Checkout = () => {
                       id="firstName"
                       value={shippingInfo.firstName}
                       onChange={(e) => handleInputChange('shipping', 'firstName', e.target.value)}
-                      placeholder="John"
+                      placeholder="First Name"
                     />
                   </div>
                   <div>
@@ -172,7 +172,7 @@ const Checkout = () => {
                       id="lastName"
                       value={shippingInfo.lastName}
                       onChange={(e) => handleInputChange('shipping', 'lastName', e.target.value)}
-                      placeholder="Doe"
+                      placeholder="Last Name"
                     />
                   </div>
                 </div>
@@ -185,7 +185,7 @@ const Checkout = () => {
                       type="email"
                       value={shippingInfo.email}
                       onChange={(e) => handleInputChange('shipping', 'email', e.target.value)}
-                      placeholder="john@example.com"
+                      placeholder="@example.com"
                     />
                   </div>
                   <div>
@@ -194,7 +194,7 @@ const Checkout = () => {
                       id="phone"
                       value={shippingInfo.phone}
                       onChange={(e) => handleInputChange('shipping', 'phone', e.target.value)}
-                      placeholder="(555) 123-4567"
+                      placeholder=""
                     />
                   </div>
                 </div>
@@ -205,7 +205,7 @@ const Checkout = () => {
                     id="address"
                     value={shippingInfo.address}
                     onChange={(e) => handleInputChange('shipping', 'address', e.target.value)}
-                    placeholder="123 Main Street"
+                    placeholder=""
                   />
                 </div>
 
@@ -216,7 +216,7 @@ const Checkout = () => {
                       id="city"
                       value={shippingInfo.city}
                       onChange={(e) => handleInputChange('shipping', 'city', e.target.value)}
-                      placeholder="New York"
+                      placeholder=""
                     />
                   </div>
                   <div>
@@ -225,7 +225,7 @@ const Checkout = () => {
                       id="state"
                       value={shippingInfo.state}
                       onChange={(e) => handleInputChange('shipping', 'state', e.target.value)}
-                      placeholder="NY"
+                      placeholder=""
                     />
                   </div>
                   <div>
@@ -234,7 +234,7 @@ const Checkout = () => {
                       id="zipCode"
                       value={shippingInfo.zipCode}
                       onChange={(e) => handleInputChange('shipping', 'zipCode', e.target.value)}
-                      placeholder="10001"
+                      placeholder="111111"
                     />
                   </div>
                 </div>
@@ -289,7 +289,7 @@ const Checkout = () => {
                       id="cardholderName"
                       value={paymentInfo.cardholderName}
                       onChange={(e) => handleInputChange('payment', 'cardholderName', e.target.value)}
-                      placeholder="John Doe"
+                      placeholder="Name"
                     />
                   </div>
                   
@@ -321,7 +321,7 @@ const Checkout = () => {
                         id="cvv"
                         value={paymentInfo.cvv}
                         onChange={(e) => handleInputChange('payment', 'cvv', e.target.value)}
-                        placeholder="123"
+                        placeholder="***"
                         maxLength={4}
                       />
                     </div>

@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { Plus, Search, Edit, Trash2, Eye, Upload } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Eye, Upload, Package } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -43,7 +43,8 @@ const AdminProducts = () => {
   }, []);
 
   const filteredProducts = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         product.brand.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
@@ -71,7 +72,7 @@ const AdminProducts = () => {
       isNew: newProduct.isNew,
       rating: parseFloat(newProduct.rating),
       reviewCount: parseInt(newProduct.reviewCount),
-      stock: parseInt(newProduct.stock)
+      stock: parseInt(newProduct.stock) || 0
     };
 
     const updatedProducts = [...products, product];
@@ -82,7 +83,7 @@ const AdminProducts = () => {
     localStorage.setItem('customProducts', JSON.stringify(customProducts));
 
     toast({
-      title: "Product added",
+      title: "Product added successfully",
       description: `${newProduct.name} has been added to your catalog.`,
     });
 
@@ -130,97 +131,105 @@ const AdminProducts = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Product Management</h1>
-            <p className="text-gray-600">Manage your product catalog</p>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
+              Product Management
+            </h1>
+            <p className="text-gray-600 text-lg">Manage your product catalog efficiently</p>
           </div>
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
-              <Button>
+              <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg">
                 <Plus className="w-4 h-4 mr-2" />
                 Add Product
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>Add New Product</DialogTitle>
+                <DialogTitle className="text-xl font-bold">Add New Product</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="productName">Product Name *</Label>
+                    <Label htmlFor="productName" className="text-sm font-medium">Product Name *</Label>
                     <Input
                       id="productName"
                       value={newProduct.name}
                       onChange={(e) => setNewProduct(prev => ({ ...prev, name: e.target.value }))}
                       placeholder="Enter product name"
+                      className="border-gray-200 focus:border-purple-300"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="productBrand">Brand *</Label>
+                    <Label htmlFor="productBrand" className="text-sm font-medium">Brand *</Label>
                     <Input
                       id="productBrand"
                       value={newProduct.brand}
                       onChange={(e) => setNewProduct(prev => ({ ...prev, brand: e.target.value }))}
                       placeholder="Enter brand name"
+                      className="border-gray-200 focus:border-purple-300"
                     />
                   </div>
                 </div>
                 
                 <div>
-                  <Label htmlFor="productDescription">Description *</Label>
+                  <Label htmlFor="productDescription" className="text-sm font-medium">Description *</Label>
                   <Textarea
                     id="productDescription"
                     value={newProduct.description}
                     onChange={(e) => setNewProduct(prev => ({ ...prev, description: e.target.value }))}
                     placeholder="Enter product description"
                     rows={3}
+                    className="border-gray-200 focus:border-purple-300"
                   />
                 </div>
                 
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <Label htmlFor="productPrice">Price (₹) *</Label>
+                    <Label htmlFor="productPrice" className="text-sm font-medium">Price (₹) *</Label>
                     <Input
                       id="productPrice"
                       type="number"
                       value={newProduct.price}
                       onChange={(e) => setNewProduct(prev => ({ ...prev, price: e.target.value }))}
                       placeholder="0"
+                      className="border-gray-200 focus:border-purple-300"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="originalPrice">Original Price (₹)</Label>
+                    <Label htmlFor="originalPrice" className="text-sm font-medium">Original Price (₹)</Label>
                     <Input
                       id="originalPrice"
                       type="number"
                       value={newProduct.originalPrice}
                       onChange={(e) => setNewProduct(prev => ({ ...prev, originalPrice: e.target.value }))}
                       placeholder="0"
+                      className="border-gray-200 focus:border-purple-300"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="stock">Stock *</Label>
+                    <Label htmlFor="stock" className="text-sm font-medium">Stock *</Label>
                     <Input
                       id="stock"
                       type="number"
                       value={newProduct.stock}
                       onChange={(e) => setNewProduct(prev => ({ ...prev, stock: e.target.value }))}
                       placeholder="0"
+                      className="border-gray-200 focus:border-purple-300"
                     />
                   </div>
                 </div>
                 
                 <div>
-                  <Label htmlFor="productCategory">Category *</Label>
+                  <Label htmlFor="productCategory" className="text-sm font-medium">Category *</Label>
                   <Select 
                     value={newProduct.category} 
                     onValueChange={(value) => setNewProduct(prev => ({ ...prev, category: value }))}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="border-gray-200 focus:border-purple-300">
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                     <SelectContent>
@@ -234,13 +243,14 @@ const AdminProducts = () => {
                 </div>
                 
                 <div>
-                  <Label htmlFor="productImage">Product Image</Label>
+                  <Label htmlFor="productImage" className="text-sm font-medium">Product Image</Label>
                   <div className="space-y-2">
                     <Input
                       id="productImage"
                       value={newProduct.image}
                       onChange={(e) => setNewProduct(prev => ({ ...prev, image: e.target.value }))}
                       placeholder="Enter image URL or upload image"
+                      className="border-gray-200 focus:border-purple-300"
                     />
                     <div className="flex items-center gap-2">
                       <span className="text-sm text-gray-500">Or upload image:</span>
@@ -255,7 +265,7 @@ const AdminProducts = () => {
                       <img 
                         src={newProduct.image} 
                         alt="Preview" 
-                        className="w-20 h-20 object-cover rounded border"
+                        className="w-24 h-24 object-cover rounded border"
                       />
                     )}
                   </div>
@@ -263,7 +273,7 @@ const AdminProducts = () => {
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="rating">Rating</Label>
+                    <Label htmlFor="rating" className="text-sm font-medium">Rating</Label>
                     <Input
                       id="rating"
                       type="number"
@@ -272,15 +282,17 @@ const AdminProducts = () => {
                       step="0.1"
                       value={newProduct.rating}
                       onChange={(e) => setNewProduct(prev => ({ ...prev, rating: e.target.value }))}
+                      className="border-gray-200 focus:border-purple-300"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="reviewCount">Review Count</Label>
+                    <Label htmlFor="reviewCount" className="text-sm font-medium">Review Count</Label>
                     <Input
                       id="reviewCount"
                       type="number"
                       value={newProduct.reviewCount}
                       onChange={(e) => setNewProduct(prev => ({ ...prev, reviewCount: e.target.value }))}
+                      className="border-gray-200 focus:border-purple-300"
                     />
                   </div>
                 </div>
@@ -292,7 +304,7 @@ const AdminProducts = () => {
                       checked={newProduct.isFeatured}
                       onCheckedChange={(checked) => setNewProduct(prev => ({ ...prev, isFeatured: !!checked }))}
                     />
-                    <Label htmlFor="featured">Featured Product</Label>
+                    <Label htmlFor="featured" className="text-sm font-medium">Featured Product</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Checkbox
@@ -300,15 +312,15 @@ const AdminProducts = () => {
                       checked={newProduct.isNew}
                       onCheckedChange={(checked) => setNewProduct(prev => ({ ...prev, isNew: !!checked }))}
                     />
-                    <Label htmlFor="new">New Product</Label>
+                    <Label htmlFor="new" className="text-sm font-medium">New Product</Label>
                   </div>
                 </div>
                 
                 <div className="flex gap-4 pt-4">
-                  <Button onClick={handleAddProduct} className="flex-1">
+                  <Button onClick={handleAddProduct} className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
                     Add Product
                   </Button>
-                  <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+                  <Button variant="outline" onClick={() => setIsAddDialogOpen(false)} className="border-gray-200">
                     Cancel
                   </Button>
                 </div>
@@ -318,9 +330,9 @@ const AdminProducts = () => {
         </div>
 
         {/* Filters */}
-        <Card className="mb-8">
+        <Card className="mb-8 bg-white/80 backdrop-blur-sm border-0 shadow-md">
           <CardHeader>
-            <CardTitle>Filters</CardTitle>
+            <CardTitle className="text-xl font-bold text-gray-900">Filters</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -330,11 +342,11 @@ const AdminProducts = () => {
                   placeholder="Search products..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 border-gray-200 focus:border-purple-300"
                 />
               </div>
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger>
+                <SelectTrigger className="border-gray-200 focus:border-purple-300">
                   <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
                 <SelectContent>
@@ -354,93 +366,102 @@ const AdminProducts = () => {
         </Card>
 
         {/* Products Table */}
-        <Card>
+        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-md">
           <CardHeader>
-            <CardTitle>Products</CardTitle>
+            <CardTitle className="text-xl font-bold text-gray-900">Products</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left py-3 px-4">Product</th>
-                    <th className="text-left py-3 px-4">Category</th>
-                    <th className="text-left py-3 px-4">Price</th>
-                    <th className="text-left py-3 px-4">Stock</th>
-                    <th className="text-left py-3 px-4">Status</th>
-                    <th className="text-left py-3 px-4">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredProducts.map((product) => (
-                    <tr key={product.id} className="border-b hover:bg-gray-50">
-                      <td className="py-4 px-4">
-                        <div className="flex items-center gap-3">
-                          <img
-                            src={product.image}
-                            alt={product.name}
-                            className="w-12 h-12 object-cover rounded-lg"
-                          />
-                          <div>
-                            <p className="font-semibold">{product.name}</p>
-                            <p className="text-sm text-gray-600">{product.brand}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="py-4 px-4">
-                        <Badge variant="secondary">
-                          {categories.find(c => c.id === product.category)?.name}
-                        </Badge>
-                      </td>
-                      <td className="py-4 px-4">
-                        <span className="font-semibold">₹{product.price.toLocaleString()}</span>
-                        {product.originalPrice && (
-                          <p className="text-xs text-gray-500 line-through">
-                            ₹{product.originalPrice.toLocaleString()}
-                          </p>
-                        )}
-                      </td>
-                      <td className="py-4 px-4">
-                        <span className={`px-2 py-1 rounded text-xs ${
-                          product.stock <= 5 ? 'bg-red-100 text-red-800' : 
-                          product.stock <= 20 ? 'bg-yellow-100 text-yellow-800' : 
-                          'bg-green-100 text-green-800'
-                        }`}>
-                          {product.stock} units
-                        </span>
-                      </td>
-                      <td className="py-4 px-4">
-                        <div className="flex gap-1">
-                          {product.isFeatured && <Badge>Featured</Badge>}
-                          {product.isNew && <Badge variant="outline">New</Badge>}
-                          {!product.isFeatured && !product.isNew && (
-                            <Badge variant="secondary">Regular</Badge>
-                          )}
-                        </div>
-                      </td>
-                      <td className="py-4 px-4">
-                        <div className="flex gap-2">
-                          <Button variant="outline" size="sm">
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                          <Button variant="outline" size="sm">
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleDeleteProduct(product.id, product.name)}
-                            disabled={initialProducts.find(p => p.id === product.id) !== undefined}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </td>
+            {filteredProducts.length === 0 ? (
+              <div className="text-center py-12">
+                <Package className="w-20 h-20 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">No products found</h3>
+                <p className="text-gray-600">No products match your current filters.</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-gray-200">
+                      <th className="text-left py-4 px-4 font-semibold text-gray-900">Product</th>
+                      <th className="text-left py-4 px-4 font-semibold text-gray-900">Category</th>
+                      <th className="text-left py-4 px-4 font-semibold text-gray-900">Price</th>
+                      <th className="text-left py-4 px-4 font-semibold text-gray-900">Stock</th>
+                      <th className="text-left py-4 px-4 font-semibold text-gray-900">Status</th>
+                      <th className="text-left py-4 px-4 font-semibold text-gray-900">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {filteredProducts.map((product) => (
+                      <tr key={product.id} className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors">
+                        <td className="py-4 px-4">
+                          <div className="flex items-center gap-3">
+                            <img
+                              src={product.image}
+                              alt={product.name}
+                              className="w-14 h-14 object-cover rounded-lg shadow-sm"
+                            />
+                            <div>
+                              <p className="font-semibold text-gray-900">{product.name}</p>
+                              <p className="text-sm text-gray-600">{product.brand}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-4 px-4">
+                          <Badge variant="secondary" className="bg-purple-100 text-purple-800">
+                            {categories.find(c => c.id === product.category)?.name || product.category}
+                          </Badge>
+                        </td>
+                        <td className="py-4 px-4">
+                          <span className="font-semibold text-gray-900">₹{product.price.toLocaleString()}</span>
+                          {product.originalPrice && (
+                            <p className="text-xs text-gray-500 line-through">
+                              ₹{product.originalPrice.toLocaleString()}
+                            </p>
+                          )}
+                        </td>
+                        <td className="py-4 px-4">
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            (product.stock || 0) <= 5 ? 'bg-red-100 text-red-800' : 
+                            (product.stock || 0) <= 20 ? 'bg-yellow-100 text-yellow-800' : 
+                            'bg-green-100 text-green-800'
+                          }`}>
+                            {product.stock || 0} units
+                          </span>
+                        </td>
+                        <td className="py-4 px-4">
+                          <div className="flex gap-1">
+                            {product.isFeatured && <Badge className="bg-blue-100 text-blue-800">Featured</Badge>}
+                            {product.isNew && <Badge className="bg-green-100 text-green-800">New</Badge>}
+                            {!product.isFeatured && !product.isNew && (
+                              <Badge variant="secondary" className="bg-gray-100 text-gray-800">Regular</Badge>
+                            )}
+                          </div>
+                        </td>
+                        <td className="py-4 px-4">
+                          <div className="flex gap-2">
+                            <Button variant="outline" size="sm" className="border-gray-200 hover:bg-gray-50">
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                            <Button variant="outline" size="sm" className="border-gray-200 hover:bg-gray-50">
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleDeleteProduct(product.id, product.name)}
+                              disabled={initialProducts.find(p => p.id === product.id) !== undefined}
+                              className="border-red-200 hover:bg-red-50 text-red-600 disabled:opacity-50"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

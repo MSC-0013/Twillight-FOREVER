@@ -101,7 +101,7 @@ const Register = () => {
             Create your account
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Join ShopNexus and start shopping
+            Join FOREVER and start shopping
           </p>
         </div>
 

@@ -62,19 +62,19 @@ const Contact = () => {
     {
       icon: <Phone className="w-6 h-6" />,
       title: "Phone",
-      details: ["1-800-SHOPNEX", "(1-800-746-7639)"],
+      details: ["+91 9348021930", "(9999999999)"],
       subtext: "Mon-Fri 9AM-6PM EST"
     },
     {
       icon: <Mail className="w-6 h-6" />,
       title: "Email",
-      details: ["support@shopnexus.com", "sales@shopnexus.com"],
+      details: ["support@FOREVER.com", "sales@FOREVER.com"],
       subtext: "We reply within 24 hours"
     },
     {
       icon: <MapPin className="w-6 h-6" />,
       title: "Address",
-      details: ["123 Commerce Street", "New York, NY 10001"],
+      details: ["BBSR", "Odisha, India"],
       subtext: "Visit our showroom"
     },
     {
@@ -250,14 +250,14 @@ const Contact = () => {
             <CardContent className="p-8 text-center">
               <h3 className="text-2xl font-bold text-gray-900 mb-4">Visit Our Showroom</h3>
               <p className="text-gray-600 mb-6">
-                Experience our products in person at our flagship store in New York City.
+                Experience our products in person at our flagship store in India.
                 Our knowledgeable staff is ready to help you find exactly what you're looking for.
               </p>
               <div className="bg-gray-100 h-64 rounded-lg flex items-center justify-center">
                 <div className="text-center">
                   <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-2" />
                   <p className="text-gray-500">Interactive map would be displayed here</p>
-                  <p className="text-sm text-gray-400">123 Commerce Street, New York, NY 10001</p>
+                  
                 </div>
               </div>
             </CardContent>

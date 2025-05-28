@@ -62,7 +62,7 @@ const Home = () => {
                   Shop Now <ArrowRight className="ml-2 w-5 h-5" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-black px-8 py-4 text-lg hover-scale">
+              <Button size="lg" variant="outline" className="border-white text-black hover:bg-white hover:text-black px-8 py-4 text-lg hover-scale">
                 Explore Collection
               </Button>
             </div>
@@ -295,7 +295,7 @@ const Home = () => {
                 Create Account <ArrowRight className="ml-2 w-5 h-5" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-black px-8 py-4 text-lg hover-scale">
+            <Button size="lg" variant="outline" className="border-white text-black  hover:bg-white hover:text-black px-8 py-4 text-lg hover-scale">
               <Link to="/products">
                 Start Shopping
               </Link>

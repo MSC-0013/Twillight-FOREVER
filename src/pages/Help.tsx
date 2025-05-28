@@ -17,11 +17,11 @@ const Help = () => {
     },
     {
       question: "How long does shipping take?",
-      answer: "Standard shipping takes 3-5 business days, while express shipping takes 1-2 business days. Free shipping is available on orders over $50."
+      answer: "Standard shipping takes 3-5 business days, while express shipping takes 1-2 business days. Free shipping is available on orders over 4000 rupees."
     },
     {
       question: "Do you ship internationally?",
-      answer: "Currently, we only ship within the United States. We're working on expanding to international shipping in the future."
+      answer: "Currently, we only ship within the India. We're working on expanding to international shipping in the future."
     },
     {
       question: "How can I cancel my order?",
@@ -29,7 +29,7 @@ const Help = () => {
     },
     {
       question: "What payment methods do you accept?",
-      answer: "We accept all major credit cards (Visa, MasterCard, American Express), PayPal, and Apple Pay."
+      answer: "We accept all major credit cards (Visa, MasterCard, American Express), PayPal and Apple Pay,Cash on delivery, any UPI payments."
     },
     {
       question: "How do I update my account information?",
@@ -46,14 +46,14 @@ const Help = () => {
       icon: <Phone className="w-6 h-6" />,
       title: "Phone Support",
       description: "Call us for immediate assistance",
-      contact: "1-800-SHOPNEX",
+      contact: "+91 9348021930",
       hours: "Mon-Fri 9AM-6PM EST"
     },
     {
       icon: <Mail className="w-6 h-6" />,
       title: "Email Support",
       description: "Send us an email and we'll respond within 24 hours",
-      contact: "support@shopnexus.com",
+      contact: "support@FOREVER.com",
       hours: "24/7"
     },
     {

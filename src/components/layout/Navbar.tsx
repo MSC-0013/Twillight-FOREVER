@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, ShoppingCart, Heart, User, Menu, X, LogOut, Settings, Package } from 'lucide-react';
+import { Search, ShoppingCart, Heart, User, Menu, X, LogOut, Settings, Package, HelpCircle, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -114,6 +114,19 @@ const Navbar = () => {
                       My Orders
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/help" className="flex items-center">
+                      <HelpCircle className="w-4 h-4 mr-2" />
+                      Help Center
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/contact" className="flex items-center">
+                      <MessageCircle className="w-4 h-4 mr-2" />
+                      Contact Us
+                    </Link>
+                  </DropdownMenuItem>
                   {isAdmin && (
                     <>
                       <DropdownMenuSeparator />
@@ -195,6 +208,22 @@ const Navbar = () => {
             >
               <ShoppingCart className="w-4 h-4 mr-2" />
               Cart ({totalItems})
+            </Link>
+            <Link
+              to="/help"
+              className="flex items-center px-3 py-3 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <HelpCircle className="w-4 h-4 mr-2" />
+              Help Center
+            </Link>
+            <Link
+              to="/contact"
+              className="flex items-center px-3 py-3 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <MessageCircle className="w-4 h-4 mr-2" />
+              Contact Us
             </Link>
             {isAuthenticated ? (
               <>
