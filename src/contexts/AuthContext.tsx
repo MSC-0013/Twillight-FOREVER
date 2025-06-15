@@ -31,12 +31,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    // Load user from localStorage
     const storedUser = localStorage.getItem('auth_user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     } else {
-      // Optional: Validate session with backend
       const fetchUser = async () => {
         try {
           const res = await fetch(`${API_BASE_URL}/api/auth/profile`, {
@@ -56,6 +54,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async (email: string, password: string) => {
+    // ✅ Hardcoded admin login bypass
+    if (email === 'admin@gmail.com' && password === 'admin123@') {
+      const adminUser: User = {
+        _id: 'admin-id',
+        name: 'Admin',
+        email: email,
+        isAdmin: true,
+      };
+      setUser(adminUser);
+      localStorage.setItem('auth_user', JSON.stringify(adminUser));
+      return true;
+    }
+
+    // 🔁 Fallback to backend login for normal users
     try {
       const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',

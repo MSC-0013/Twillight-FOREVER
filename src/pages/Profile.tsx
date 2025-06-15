@@ -28,7 +28,7 @@ const Profile = () => {
   // Load user profile data
   useEffect(() => {
     if (user) {
-      const savedProfile = localStorage.getItem(`profile_${user.id}`);
+      const savedProfile = localStorage.getItem(`profile_${user.email}`);
       if (savedProfile) {
         const profileData = JSON.parse(savedProfile);
         setUserInfo(profileData);
@@ -44,14 +44,14 @@ const Profile = () => {
 
   useEffect(() => {
     const savedOrders = JSON.parse(localStorage.getItem('orders') || '[]');
-    const userOrders = user ? savedOrders.filter((order: any) => order.userId === user.id) : [];
+    const userOrders = user ? savedOrders.filter((order: any) => order.userEmail === user.email) : [];
     setOrders(userOrders);
   }, [user]);
 
   const handleUpdateProfile = () => {
     if (user) {
       // Save profile data to localStorage
-      localStorage.setItem(`profile_${user.id}`, JSON.stringify(userInfo));
+      localStorage.setItem(`profile_${user.email}`, JSON.stringify(userInfo));
       
       // Update user context with new name
       updateUser({ name: userInfo.name, email: userInfo.email });
@@ -68,7 +68,7 @@ const Profile = () => {
       order.id === orderId ? { ...order, status: 'cancelled' } : order
     );
     localStorage.setItem('orders', JSON.stringify(updatedOrders));
-    setOrders(updatedOrders.filter((order: any) => order.userId === user?.id));
+    setOrders(updatedOrders.filter((order: any) => order.userEmail === user?.email));
     
     toast({
       title: "Order cancelled",

@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Package, Truck, CheckCircle, Home } from 'lucide-react';
@@ -16,6 +15,14 @@ const OrderDetails = () => {
     const foundOrder = orders.find((o: any) => o.id === orderId);
     setOrder(foundOrder);
   }, [orderId]);
+
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    const d = date.getDate().toString().padStart(2, '0');
+    const m = (date.getMonth() + 1).toString().padStart(2, '0');
+    const y = date.getFullYear();
+    return `${d}/${m}/${y}`;
+  };
 
   if (!order) {
     return (
@@ -75,7 +82,7 @@ const OrderDetails = () => {
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Order #{order.id}</h1>
             <p className="text-gray-600">
-              Placed on {new Date(order.createdAt).toLocaleDateString()}
+              Placed on {formatDate(order.createdAt)}
             </p>
           </div>
           <Badge className={getStatusColor(order.status)}>
@@ -162,23 +169,23 @@ const OrderDetails = () => {
                     <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-bold">${(item.price * item.quantity).toFixed(2)}</p>
-                    <p className="text-sm text-gray-600">${item.price} each</p>
+                    <p className="font-bold">₹{(item.price * item.quantity).toFixed(2)}</p>
+                    <p className="text-sm text-gray-600">₹{item.price.toFixed(2)} each</p>
                   </div>
                 </div>
               ))}
             </div>
-            
+
             <Separator className="my-4" />
-            
+
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span>${(order.totalAmount / 1.08).toFixed(2)}</span>
+                <span>₹{(order.totalAmount / 1.08).toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Tax</span>
-                <span>${(order.totalAmount - (order.totalAmount / 1.08)).toFixed(2)}</span>
+                <span>₹{(order.totalAmount - (order.totalAmount / 1.08)).toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Shipping</span>
@@ -187,7 +194,7 @@ const OrderDetails = () => {
               <Separator />
               <div className="flex justify-between text-lg font-bold">
                 <span>Total</span>
-                <span>${order.totalAmount.toFixed(2)}</span>
+                <span>₹{order.totalAmount.toFixed(2)}</span>
               </div>
             </div>
           </CardContent>
