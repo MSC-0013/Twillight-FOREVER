@@ -2,46 +2,20 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        required: [true, 'Please add a username'],
-        trim: true
-    },
-    email: {
-        type: String,
-        required: [true, 'Please add an email'],
-        unique: true,
-        trim: true,
-        lowercase: true,
-        match: [
-            /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-            'Please add a valid email'
-        ]
-    },
-    password: {
-        type: String,
-        required: [true, 'Please add a password'],
-        minlength: 6,
-        select: false
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    }
+  username: { type: String, required: true },
+  email:    { type: String, required: true, unique: true },
+  password: { type: String, required: true, select: false },
+  isAdmin:  { type: Boolean, default: false }
 });
 
-// Encrypt password using bcrypt
-userSchema.pre('save', async function(next) {
-    if (!this.isModified('password')) {
-        next();
-    }
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
 });
 
-// Match user entered password to hashed password in database
-userSchema.methods.matchPassword = async function(enteredPassword) {
-    return await bcrypt.compare(enteredPassword, this.password);
+userSchema.methods.matchPassword = function (enteredPassword) {
+  return bcrypt.compare(enteredPassword, this.password);
 };
 
-module.exports = mongoose.model('User', userSchema); 
+module.exports = mongoose.model('User', userSchema);

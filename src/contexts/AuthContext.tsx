@@ -53,7 +53,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } else if (email === 'user@example.com' && password === 'password') {
       const regularUser = {
         id: '2',
-        name: 'John Doe',
+        name: 'X',
         email: 'user@example.com',
         isAdmin: false
       };
