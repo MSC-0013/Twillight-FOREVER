@@ -44,7 +44,7 @@ const Profile = () => {
 
   useEffect(() => {
     const savedOrders = JSON.parse(localStorage.getItem('orders') || '[]');
-    const userOrders = user ? savedOrders.filter((order: any) => order.userEmail === user.email) : [];
+    const userOrders = user ? savedOrders.filter((order: any) => order.userId === user.email) : [];
     setOrders(userOrders);
   }, [user]);
 
@@ -68,7 +68,7 @@ const Profile = () => {
       order.id === orderId ? { ...order, status: 'cancelled' } : order
     );
     localStorage.setItem('orders', JSON.stringify(updatedOrders));
-    setOrders(updatedOrders.filter((order: any) => order.userEmail === user?.email));
+    setOrders(updatedOrders.filter((order: any) => order.userId === user?.email));
     
     toast({
       title: "Order cancelled",
