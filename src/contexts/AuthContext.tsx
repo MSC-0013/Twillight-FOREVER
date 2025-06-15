@@ -10,7 +10,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<boolean>;
-  register: (name: string, email: string, password: string) => Promise<boolean>;
+  register: (name: string, email: string, password: string, confirmPassword: string) => Promise<boolean>;
   logout: () => void;
   updateUser: (updatedUser: Partial<User>) => void;
   isAuthenticated: boolean;
@@ -31,15 +31,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch(`${API_BASE_URL}/api/auth/profile`, { credentials: 'include' });
-        if (res.ok) setUser(await res.json());
-      } catch (err) {
-        console.error('Error fetching profile:', err);
-      }
-    };
-    fetchUser();
+    // Load user from localStorage
+    const storedUser = localStorage.getItem('auth_user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    } else {
+      // Optional: Validate session with backend
+      const fetchUser = async () => {
+        try {
+          const res = await fetch(`${API_BASE_URL}/api/auth/profile`, {
+            credentials: 'include',
+          });
+          if (res.ok) {
+            const userData = await res.json();
+            setUser(userData);
+            localStorage.setItem('auth_user', JSON.stringify(userData));
+          }
+        } catch (err) {
+          console.error('Error fetching profile:', err);
+        }
+      };
+      fetchUser();
+    }
   }, []);
 
   const login = async (email: string, password: string) => {
@@ -50,35 +63,48 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
-      if (res.ok) {
-        setUser(await res.json());
-        return true;
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || 'Login failed');
       }
-      console.warn('Login failed');
-      return false;
-    } catch (error) {
-      console.error('Login error:', error);
-      return false;
+
+      setUser(data);
+      localStorage.setItem('auth_user', JSON.stringify(data));
+      return true;
+    } catch (error: any) {
+      console.error('Login error:', error.message);
+      throw new Error(error.message || 'Login failed');
     }
   };
 
-  const register = async (name: string, email: string, password: string) => {
+  const register = async (
+    name: string,
+    email: string,
+    password: string,
+    confirmPassword: string
+  ) => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password, confirmPassword: password }),
+        body: JSON.stringify({ name, email, password, confirmPassword }),
       });
-      if (res.ok) {
-        setUser(await res.json());
-        return true;
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || 'Registration failed');
       }
-      console.warn('Registration failed');
-      return false;
-    } catch (error) {
-      console.error('Register error:', error);
-      return false;
+
+      setUser(data);
+      localStorage.setItem('auth_user', JSON.stringify(data));
+      return true;
+    } catch (error: any) {
+      console.error('Register error:', error.message);
+      throw new Error(error.message || 'Registration failed');
     }
   };
 
@@ -92,22 +118,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.warn('Logout failed:', error);
     }
     setUser(null);
+    localStorage.removeItem('auth_user');
   };
 
   const updateUser = (updatedUser: Partial<User>) => {
-    if (user) setUser({ ...user, ...updatedUser });
+    if (user) {
+      const updated = { ...user, ...updatedUser };
+      setUser(updated);
+      localStorage.setItem('auth_user', JSON.stringify(updated));
+    }
   };
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      login,
-      register,
-      logout,
-      updateUser,
-      isAuthenticated: !!user,
-      isAdmin: user?.isAdmin || false,
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        register,
+        logout,
+        updateUser,
+        isAuthenticated: !!user,
+        isAdmin: user?.isAdmin || false,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

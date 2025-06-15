@@ -1,16 +1,24 @@
-
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { CreditCard, MapPin, User, Phone, Mail, Lock, Banknote, Smartphone } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { useCart } from '@/contexts/CartContext';
-import { useAuth } from '@/contexts/AuthContext';
-import { useToast } from '@/hooks/use-toast';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  CreditCard,
+  MapPin,
+  User,
+  Phone,
+  Mail,
+  Lock,
+  Banknote,
+  Smartphone,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -18,79 +26,100 @@ const Checkout = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('card');
+  const [paymentMethod, setPaymentMethod] = useState("card");
 
   const [shippingInfo, setShippingInfo] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    address: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    country: 'India'
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    state: "",
+    zipCode: "",
+    country: "India",
   });
 
   const [paymentInfo, setPaymentInfo] = useState({
-    cardNumber: '',
-    expiryDate: '',
-    cvv: '',
-    cardholderName: ''
+    cardNumber: "",
+    expiryDate: "",
+    cvv: "",
+    cardholderName: "",
   });
 
   // Auto-fill shipping info from user profile
   useEffect(() => {
     if (user) {
-      const savedProfile = localStorage.getItem(`profile_${user.id}`);
+      const savedProfile = localStorage.getItem(`profile_${user.email}`);
       if (savedProfile) {
         const profileData = JSON.parse(savedProfile);
-        const nameParts = profileData.name.split(' ');
+        const nameParts = profileData.name.split(" ");
         setShippingInfo({
-          firstName: nameParts[0] || '',
-          lastName: nameParts.slice(1).join(' ') || '',
-          email: profileData.email || '',
-          phone: profileData.phone || '',
-          address: profileData.address || '',
-          city: profileData.city || '',
-          state: profileData.state || '',
-          zipCode: profileData.zipCode || '',
-          country: 'India'
+          firstName: nameParts[0] || "",
+          lastName: nameParts.slice(1).join(" ") || "",
+          email: profileData.email || "",
+          phone: profileData.phone || "",
+          address: profileData.address || "",
+          city: profileData.city || "",
+          state: profileData.state || "",
+          zipCode: profileData.zipCode || "",
+          country: "India",
         });
       }
     }
   }, [user]);
 
-  const handleInputChange = (section: 'shipping' | 'payment', field: string, value: string) => {
-    if (section === 'shipping') {
-      setShippingInfo(prev => ({ ...prev, [field]: value }));
+  const handleInputChange = (
+    section: "shipping" | "payment",
+    field: string,
+    value: string
+  ) => {
+    if (section === "shipping") {
+      setShippingInfo((prev) => ({ ...prev, [field]: value }));
     } else {
-      setPaymentInfo(prev => ({ ...prev, [field]: value }));
+      setPaymentInfo((prev) => ({ ...prev, [field]: value }));
     }
   };
 
   const validateForm = () => {
-    const requiredShippingFields = ['firstName', 'lastName', 'email', 'address', 'city', 'state', 'zipCode'];
+    const requiredShippingFields = [
+      "firstName",
+      "lastName",
+      "email",
+      "address",
+      "city",
+      "state",
+      "zipCode",
+    ];
 
     for (const field of requiredShippingFields) {
       if (!shippingInfo[field as keyof typeof shippingInfo]) {
         toast({
           title: "Missing Information",
-          description: `Please fill in your ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}.`,
-          variant: "destructive"
+          description: `Please fill in your ${field
+            .replace(/([A-Z])/g, " $1")
+            .toLowerCase()}.`,
+          variant: "destructive",
         });
         return false;
       }
     }
 
-    if (paymentMethod === 'card') {
-      const requiredPaymentFields = ['cardNumber', 'expiryDate', 'cvv', 'cardholderName'];
+    if (paymentMethod === "card") {
+      const requiredPaymentFields = [
+        "cardNumber",
+        "expiryDate",
+        "cvv",
+        "cardholderName",
+      ];
       for (const field of requiredPaymentFields) {
         if (!paymentInfo[field as keyof typeof paymentInfo]) {
           toast({
             title: "Missing Payment Information",
-            description: `Please fill in your ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}.`,
-            variant: "destructive"
+            description: `Please fill in your ${field
+              .replace(/([A-Z])/g, " $1")
+              .toLowerCase()}.`,
+            variant: "destructive",
           });
           return false;
         }
@@ -106,24 +135,24 @@ const Checkout = () => {
     setIsLoading(true);
 
     // Simulate order processing
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     const orderId = Date.now().toString();
-    
+
     // Store order in localStorage (in a real app, this would be sent to the server)
     const order = {
       id: orderId,
-      userId: user?.id,
+      userId: user?.email,
       items,
       shippingInfo,
       paymentMethod,
-      totalAmount: (totalPrice * 1.08),
-      status: 'confirmed',
-      createdAt: new Date().toISOString()
+      totalAmount: totalPrice * 1.08,
+      status: "confirmed",
+      createdAt: new Date().toISOString(),
     };
 
-    const existingOrders = JSON.parse(localStorage.getItem('orders') || '[]');
-    localStorage.setItem('orders', JSON.stringify([...existingOrders, order]));
+    const existingOrders = JSON.parse(localStorage.getItem("orders") || "[]");
+    localStorage.setItem("orders", JSON.stringify([...existingOrders, order]));
 
     clearCart();
     setIsLoading(false);
@@ -162,7 +191,13 @@ const Checkout = () => {
                     <Input
                       id="firstName"
                       value={shippingInfo.firstName}
-                      onChange={(e) => handleInputChange('shipping', 'firstName', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange(
+                          "shipping",
+                          "firstName",
+                          e.target.value
+                        )
+                      }
                       placeholder="First Name"
                     />
                   </div>
@@ -171,12 +206,18 @@ const Checkout = () => {
                     <Input
                       id="lastName"
                       value={shippingInfo.lastName}
-                      onChange={(e) => handleInputChange('shipping', 'lastName', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange(
+                          "shipping",
+                          "lastName",
+                          e.target.value
+                        )
+                      }
                       placeholder="Last Name"
                     />
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="email">Email</Label>
@@ -184,7 +225,9 @@ const Checkout = () => {
                       id="email"
                       type="email"
                       value={shippingInfo.email}
-                      onChange={(e) => handleInputChange('shipping', 'email', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("shipping", "email", e.target.value)
+                      }
                       placeholder="@example.com"
                     />
                   </div>
@@ -193,7 +236,9 @@ const Checkout = () => {
                     <Input
                       id="phone"
                       value={shippingInfo.phone}
-                      onChange={(e) => handleInputChange('shipping', 'phone', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("shipping", "phone", e.target.value)
+                      }
                       placeholder=""
                     />
                   </div>
@@ -204,7 +249,9 @@ const Checkout = () => {
                   <Input
                     id="address"
                     value={shippingInfo.address}
-                    onChange={(e) => handleInputChange('shipping', 'address', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("shipping", "address", e.target.value)
+                    }
                     placeholder=""
                   />
                 </div>
@@ -215,7 +262,9 @@ const Checkout = () => {
                     <Input
                       id="city"
                       value={shippingInfo.city}
-                      onChange={(e) => handleInputChange('shipping', 'city', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("shipping", "city", e.target.value)
+                      }
                       placeholder=""
                     />
                   </div>
@@ -224,7 +273,9 @@ const Checkout = () => {
                     <Input
                       id="state"
                       value={shippingInfo.state}
-                      onChange={(e) => handleInputChange('shipping', 'state', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("shipping", "state", e.target.value)
+                      }
                       placeholder=""
                     />
                   </div>
@@ -233,7 +284,9 @@ const Checkout = () => {
                     <Input
                       id="zipCode"
                       value={shippingInfo.zipCode}
-                      onChange={(e) => handleInputChange('shipping', 'zipCode', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("shipping", "zipCode", e.target.value)
+                      }
                       placeholder="111111"
                     />
                   </div>
@@ -247,24 +300,36 @@ const Checkout = () => {
                 <CardTitle>Payment Method</CardTitle>
               </CardHeader>
               <CardContent>
-                <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod}>
+                <RadioGroup
+                  value={paymentMethod}
+                  onValueChange={setPaymentMethod}
+                >
                   <div className="flex items-center space-x-2 p-4 border rounded-lg">
                     <RadioGroupItem value="card" id="card" />
-                    <Label htmlFor="card" className="flex items-center gap-2 cursor-pointer">
+                    <Label
+                      htmlFor="card"
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
                       <CreditCard className="w-5 h-5" />
                       Credit/Debit Card
                     </Label>
                   </div>
                   <div className="flex items-center space-x-2 p-4 border rounded-lg">
                     <RadioGroupItem value="upi" id="upi" />
-                    <Label htmlFor="upi" className="flex items-center gap-2 cursor-pointer">
+                    <Label
+                      htmlFor="upi"
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
                       <Smartphone className="w-5 h-5" />
                       UPI Payment
                     </Label>
                   </div>
                   <div className="flex items-center space-x-2 p-4 border rounded-lg">
                     <RadioGroupItem value="cod" id="cod" />
-                    <Label htmlFor="cod" className="flex items-center gap-2 cursor-pointer">
+                    <Label
+                      htmlFor="cod"
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
                       <Banknote className="w-5 h-5" />
                       Cash on Delivery
                     </Label>
@@ -274,7 +339,7 @@ const Checkout = () => {
             </Card>
 
             {/* Payment Information - only show for card payments */}
-            {paymentMethod === 'card' && (
+            {paymentMethod === "card" && (
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -288,17 +353,29 @@ const Checkout = () => {
                     <Input
                       id="cardholderName"
                       value={paymentInfo.cardholderName}
-                      onChange={(e) => handleInputChange('payment', 'cardholderName', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange(
+                          "payment",
+                          "cardholderName",
+                          e.target.value
+                        )
+                      }
                       placeholder="Name"
                     />
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="cardNumber">Card Number</Label>
                     <Input
                       id="cardNumber"
                       value={paymentInfo.cardNumber}
-                      onChange={(e) => handleInputChange('payment', 'cardNumber', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange(
+                          "payment",
+                          "cardNumber",
+                          e.target.value
+                        )
+                      }
                       placeholder="1234 5678 9012 3456"
                       maxLength={19}
                     />
@@ -310,7 +387,13 @@ const Checkout = () => {
                       <Input
                         id="expiryDate"
                         value={paymentInfo.expiryDate}
-                        onChange={(e) => handleInputChange('payment', 'expiryDate', e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "payment",
+                            "expiryDate",
+                            e.target.value
+                          )
+                        }
                         placeholder="MM/YY"
                         maxLength={5}
                       />
@@ -320,7 +403,9 @@ const Checkout = () => {
                       <Input
                         id="cvv"
                         value={paymentInfo.cvv}
-                        onChange={(e) => handleInputChange('payment', 'cvv', e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("payment", "cvv", e.target.value)
+                        }
                         placeholder="***"
                         maxLength={4}
                       />
@@ -331,14 +416,15 @@ const Checkout = () => {
             )}
 
             {/* UPI Payment Instructions */}
-            {paymentMethod === 'upi' && (
+            {paymentMethod === "upi" && (
               <Card>
                 <CardContent className="p-6">
                   <div className="text-center">
                     <Smartphone className="w-16 h-16 mx-auto mb-4 text-blue-600" />
                     <h3 className="text-lg font-semibold mb-2">UPI Payment</h3>
                     <p className="text-gray-600">
-                      You will be redirected to your UPI app to complete the payment after placing the order.
+                      You will be redirected to your UPI app to complete the
+                      payment after placing the order.
                     </p>
                   </div>
                 </CardContent>
@@ -346,12 +432,14 @@ const Checkout = () => {
             )}
 
             {/* COD Instructions */}
-            {paymentMethod === 'cod' && (
+            {paymentMethod === "cod" && (
               <Card>
                 <CardContent className="p-6">
                   <div className="text-center">
                     <Banknote className="w-16 h-16 mx-auto mb-4 text-green-600" />
-                    <h3 className="text-lg font-semibold mb-2">Cash on Delivery</h3>
+                    <h3 className="text-lg font-semibold mb-2">
+                      Cash on Delivery
+                    </h3>
                     <p className="text-gray-600">
                       Pay in cash when your order is delivered to your doorstep.
                     </p>
@@ -371,7 +459,10 @@ const Checkout = () => {
                 {/* Order Items */}
                 <div className="space-y-3">
                   {items.map((item) => (
-                    <div key={item.id} className="flex justify-between items-center">
+                    <div
+                      key={item.id}
+                      className="flex justify-between items-center"
+                    >
                       <div className="flex items-center gap-3">
                         <img
                           src={item.image}
@@ -380,21 +471,24 @@ const Checkout = () => {
                         />
                         <div>
                           <p className="font-medium text-sm">{item.name}</p>
-                          <p className="text-gray-600 text-xs">Qty: {item.quantity}</p>
+                          <p className="text-gray-600 text-xs">
+                            Qty: {item.quantity}
+                          </p>
                         </div>
                       </div>
-                      <span className="font-medium">${(item.price * item.quantity).toFixed(2)}</span>
+                      <span className="font-medium">
+                        ₹{Math.round(item.price * item.quantity)}
+                      </span>
                     </div>
                   ))}
                 </div>
-
                 <Separator />
 
                 {/* Totals */}
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
-                    <span>${totalPrice.toFixed(2)}</span>
+                    <span>₹{totalPrice.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Shipping</span>
@@ -402,18 +496,18 @@ const Checkout = () => {
                   </div>
                   <div className="flex justify-between">
                     <span>Tax</span>
-                    <span>${tax.toFixed(2)}</span>
+                    <span>₹{tax.toFixed(2)}</span>
                   </div>
                   <Separator />
                   <div className="flex justify-between text-lg font-bold">
                     <span>Total</span>
-                    <span>${total.toFixed(2)}</span>
+                    <span>₹{total.toFixed(2)}</span>
                   </div>
                 </div>
 
-                <Button 
-                  onClick={handlePlaceOrder} 
-                  className="w-full" 
+                <Button
+                  onClick={handlePlaceOrder}
+                  className="w-full"
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -425,7 +519,7 @@ const Checkout = () => {
                     <>
                       <Lock className="w-4 h-4 mr-2" />
                       Place Order
-                    </> 
+                    </>
                   )}
                 </Button>
               </CardContent>

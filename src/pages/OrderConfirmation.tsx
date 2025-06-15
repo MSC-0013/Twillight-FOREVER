@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { CheckCircle, Package, Truck, Home, ArrowRight } from 'lucide-react';
@@ -32,6 +31,15 @@ const OrderConfirmation = () => {
   const estimatedDelivery = new Date();
   estimatedDelivery.setDate(estimatedDelivery.getDate() + 5);
 
+  // Custom date formatter: DD/MM/YYYY
+  const formatDate = (dateStr: string | Date) => {
+    const date = new Date(dateStr);
+    const d = date.getDate().toString().padStart(2, '0');
+    const m = (date.getMonth() + 1).toString().padStart(2, '0');
+    const y = date.getFullYear();
+    return `${d}/${m}/${y}`;
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -58,18 +66,18 @@ const OrderConfirmation = () => {
               <div>
                 <p className="text-sm text-gray-600">Order Date</p>
                 <p className="font-medium">
-                  {new Date(order.createdAt).toLocaleDateString()}
+                  {formatDate(order.createdAt)}
                 </p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">Estimated Delivery</p>
                 <p className="font-medium">
-                  {estimatedDelivery.toLocaleDateString()}
+                  {formatDate(estimatedDelivery)}
                 </p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">Total Amount</p>
-                <p className="font-bold text-lg">${order.totalAmount.toFixed(2)}</p>
+                <p className="font-bold text-lg">₹{Math.round(order.totalAmount)}</p>
               </div>
             </div>
           </CardContent>
@@ -129,7 +137,7 @@ const OrderConfirmation = () => {
                     <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-bold">${(item.price * item.quantity).toFixed(2)}</p>
+                    <p className="font-bold">₹{Math.round(item.price * item.quantity)}</p>
                   </div>
                 </div>
               ))}

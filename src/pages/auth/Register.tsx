@@ -67,7 +67,7 @@ const Register = () => {
     setIsLoading(true);
 
     try {
-      const success = await register(formData.name, formData.email, formData.password);
+      const success = await register(formData.name, formData.email, formData.password, formData.confirmPassword);
       
       if (success) {
         toast({
