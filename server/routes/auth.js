@@ -10,32 +10,35 @@ const generateToken = (res, id) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
-    maxAge: 30 * 24 * 60 * 60 * 1000
+    maxAge: 30 * 24 * 60 * 60 * 1000,
   });
 };
 
-// Register
+// ✅ Register
 router.post('/register', async (req, res) => {
-  const { username, email, password, confirmPassword } = req.body;
-  if (!username || !email || !password || password !== confirmPassword) {
-    return res.status(400).json({ message: 'Invalid data' });
+  const { name, email, password, confirmPassword } = req.body;
+
+  if (!name || !email || !password || password !== confirmPassword) {
+    return res.status(400).json({ message: 'Invalid registration data' });
   }
 
-  const userExists = await User.findOne({ email });
-  if (userExists) return res.status(400).json({ message: 'User already exists' });
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    return res.status(400).json({ message: 'User already exists' });
+  }
 
-  const user = await User.create({ username, email, password });
+  const user = await User.create({ name, email, password });
   generateToken(res, user._id);
 
   res.status(201).json({
     _id: user._id,
-    username: user.username,
+    name: user.name,
     email: user.email,
-    isAdmin: user.isAdmin
+    isAdmin: user.isAdmin,
   });
 });
 
-// Login
+// ✅ Login
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email }).select('+password');
@@ -45,25 +48,26 @@ router.post('/login', async (req, res) => {
   }
 
   generateToken(res, user._id);
+
   res.json({
     _id: user._id,
-    username: user.username,
+    name: user.name,
     email: user.email,
-    isAdmin: user.isAdmin
+    isAdmin: user.isAdmin,
   });
 });
 
-// Profile
+// ✅ Profile
 router.get('/profile', protect, (req, res) => {
   res.json({
     _id: req.user._id,
-    username: req.user.username,
+    name: req.user.name,
     email: req.user.email,
-    isAdmin: req.user.isAdmin
+    isAdmin: req.user.isAdmin,
   });
 });
 
-// Logout
+// ✅ Logout
 router.post('/logout', (req, res) => {
   res.clearCookie('token').json({ message: 'Logged out' });
 });
