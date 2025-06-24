@@ -10,6 +10,8 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { jsPDF } from 'jspdf';
+
 
 const Profile = () => {
   const { user, logout, updateUser } = useAuth();
@@ -52,10 +54,10 @@ const Profile = () => {
     if (user) {
       // Save profile data to localStorage
       localStorage.setItem(`profile_${user.email}`, JSON.stringify(userInfo));
-      
+
       // Update user context with new name
       updateUser({ name: userInfo.name, email: userInfo.email });
-      
+
       toast({
         title: "Profile updated",
         description: "Your profile information has been updated successfully.",
@@ -64,12 +66,12 @@ const Profile = () => {
   };
 
   const handleCancelOrder = (orderId: string) => {
-    const updatedOrders = JSON.parse(localStorage.getItem('orders') || '[]').map((order: any) => 
+    const updatedOrders = JSON.parse(localStorage.getItem('orders') || '[]').map((order: any) =>
       order.id === orderId ? { ...order, status: 'cancelled' } : order
     );
     localStorage.setItem('orders', JSON.stringify(updatedOrders));
     setOrders(updatedOrders.filter((order: any) => order.userId === user?.email));
-    
+
     toast({
       title: "Order cancelled",
       description: `Order #${orderId} has been cancelled.`,
@@ -98,6 +100,31 @@ const Profile = () => {
   const canCancelOrder = (status: string) => {
     return status === 'confirmed' || status === 'processing' || status === 'shipped';
   };
+  const generateReceipt = (order) => {
+    const doc = new jsPDF();
+
+    doc.setFontSize(16);
+    doc.text(`Receipt for Order #${order.id}`, 20, 20);
+
+    doc.setFontSize(12);
+    doc.text(`Date: ${new Date(order.createdAt).toLocaleDateString()}`, 20, 30);
+    doc.text(`Total Amount: $${order.totalAmount.toFixed(2)}`, 20, 40);
+
+    doc.text("Items:", 20, 50);
+    let y = 60;
+
+    order.items.forEach((item) => {
+      doc.text(
+        `${item.name} - ${item.qty} x $${item.price.toFixed(2)} = $${(item.qty * item.price).toFixed(2)}`,
+        20,
+        y
+      );
+      y += 10;
+    });
+
+    doc.save(`Receipt_Order_${order.id}.pdf`);
+  };
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -251,7 +278,7 @@ const Profile = () => {
                             <span className="font-bold">${order.totalAmount.toFixed(2)}</span>
                           </div>
                         </div>
-                        
+
                         <div className="flex items-center gap-3 mb-3">
                           {order.items.slice(0, 3).map((item: any) => (
                             <img
@@ -272,7 +299,15 @@ const Profile = () => {
                           <span className="text-sm text-gray-600">
                             {order.items.length} item{order.items.length !== 1 ? 's' : ''}
                           </span>
-                          <div className="flex gap-2">
+                          <div className="flex gap-2 flex-wrap">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => generateReceipt(order)}
+                              className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                            >
+                              Download Receipt
+                            </Button>
                             <Button variant="outline" size="sm" asChild>
                               <Link to={`/orders/${order.id}`}>
                                 <Eye className="w-4 h-4 mr-2" />
@@ -280,8 +315,8 @@ const Profile = () => {
                               </Link>
                             </Button>
                             {canCancelOrder(order.status) && (
-                              <Button 
-                                variant="outline" 
+                              <Button
+                                variant="outline"
                                 size="sm"
                                 onClick={() => handleCancelOrder(order.id)}
                                 className="text-red-600 border-red-200 hover:bg-red-50"
@@ -291,6 +326,7 @@ const Profile = () => {
                               </Button>
                             )}
                           </div>
+
                         </div>
                       </div>
                     ))}
