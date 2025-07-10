@@ -46,7 +46,6 @@ const Profile = () => {
     const savedOrders = JSON.parse(localStorage.getItem("orders") || "[]");
     const userOrders = user
       ? savedOrders.filter((order) => order.userId === user.email)
-
       : [];
     setOrders(userOrders);
   }, [user]);
@@ -73,9 +72,7 @@ const Profile = () => {
       order.id === orderId ? { ...order, status: "cancelled" } : order
     );
     localStorage.setItem("orders", JSON.stringify(updatedOrders));
-    setOrders(
-      updatedOrders.filter((order) => order.userId === user?.email)
-    );
+    setOrders(updatedOrders.filter((order) => order.userId === user?.email));
 
     toast({
       title: "Order cancelled",
@@ -115,14 +112,14 @@ const Profile = () => {
 
     doc.setFontSize(12);
     doc.text(`Date: ${new Date(order.createdAt).toLocaleDateString()}`, 20, 30);
-    doc.text(`Total Amount: $${order.totalAmount.toFixed(2)}`, 20, 40);
+    doc.text(`Total Amount: ₹${order.totalAmount.toFixed(2)}`, 20, 40);
 
     doc.text("Items:", 20, 50);
     let y = 60;
 
     order.items.forEach((item) => {
       doc.text(
-        `${item.name} - ${item.qty} x $${item.price.toFixed(2)} = $${(
+        `${item.name} - ${item.qty} x ₹${item.price.toFixed(2)} = ₹${(
           item.qty * item.price
         ).toFixed(2)}`,
         20,
@@ -352,7 +349,7 @@ const Profile = () => {
                               {order.status}
                             </Badge>
                             <span className="font-bold">
-                              ${order.totalAmount.toFixed(2)}
+                              ₹{order.totalAmount.toFixed(2)}
                             </span>
                           </div>
                         </div>

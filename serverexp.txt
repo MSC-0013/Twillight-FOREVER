@@ -1,0 +1,323 @@
+📦 server.js – Main Express App
+js
+Copy
+Edit
+const express = require('express');
+✅ Imports Express – the framework used to build the server and routes.
+
+js
+Copy
+Edit
+const mongoose = require('mongoose');
+✅ Imports Mongoose – helps connect and interact with MongoDB using schemas.
+
+js
+Copy
+Edit
+const cors = require('cors');
+✅ CORS middleware – allows your frontend (on another domain/port) to make API calls to this backend.
+
+js
+Copy
+Edit
+const dotenv = require('dotenv');
+✅ Loads environment variables (like secrets and DB URLs) from a .env file.
+
+js
+Copy
+Edit
+const cookieParser = require('cookie-parser');
+✅ Parses cookies from requests – essential for reading the JWT token stored in cookies.
+
+js
+Copy
+Edit
+const connectDB = require('./db');
+✅ Imports the function that connects to MongoDB.
+
+js
+Copy
+Edit
+const authRoutes = require('./routes/auth');
+✅ Imports all auth-related routes (login, register, profile, logout).
+
+js
+Copy
+Edit
+dotenv.config();
+✅ Loads .env values into process.env.
+
+js
+Copy
+Edit
+const app = express();
+✅ Creates the Express app instance.
+
+js
+Copy
+Edit
+app.use(cors({
+  origin: [
+    process.env.VERCEL_CLIENT_URL,
+    'http://localhost:5173',
+    'http://localhost:8080'
+  ],
+  credentials: true
+}));
+✅ Sets up CORS to allow requests from your frontend (local and deployed).
+✅ credentials: true is required for cookies (JWT).
+
+js
+Copy
+Edit
+app.use(express.json());
+✅ Parses incoming JSON request bodies (like req.body for login/register).
+
+js
+Copy
+Edit
+app.use(cookieParser());
+✅ Enables reading cookies in requests (used to get the JWT).
+
+js
+Copy
+Edit
+connectDB();
+✅ Connects to MongoDB using the function from db.js.
+
+js
+Copy
+Edit
+app.use('/api/auth', authRoutes);
+✅ Tells the server to use /api/auth/* routes from auth.js.
+
+js
+Copy
+Edit
+app.get('/', (req, res) => res.send('API running'));
+✅ Default route to check if the API is live.
+
+js
+Copy
+Edit
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+✅ Starts the server on port 5000 or your chosen environment port.
+
+⚙️ db.js – MongoDB Connection File
+js
+Copy
+Edit
+const mongoose = require('mongoose');
+✅ Imports Mongoose to connect to MongoDB.
+
+js
+Copy
+Edit
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log('MongoDB connected');
+  } catch (err) {
+    console.error(err.message);
+    process.exit(1);
+  }
+};
+✅ Async function that connects to MongoDB using the URI from .env.
+✅ process.exit(1) stops the app if connection fails.
+
+js
+Copy
+Edit
+module.exports = connectDB;
+✅ Exports the function so it can be used in server.js.
+
+👤 models/User.js – User Schema
+js
+Copy
+Edit
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+✅ Imports Mongoose for schema and Bcrypt for password hashing.
+
+js
+Copy
+Edit
+const userSchema = new mongoose.Schema({
+  name:     { type: String, required: true },
+  email:    { type: String, required: true, unique: true },
+  password: { type: String, required: true, select: false },
+  isAdmin:  { type: Boolean, default: false }
+});
+✅ Defines the fields for a User.
+✅ select: false on password means it won’t be returned in queries unless explicitly asked for.
+
+js
+Copy
+Edit
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
+✅ Middleware that runs before saving a user – hashes password if it’s new or changed.
+
+js
+Copy
+Edit
+userSchema.methods.matchPassword = function (enteredPassword) {
+  return bcrypt.compare(enteredPassword, this.password);
+};
+✅ Custom method to compare a plain text password with the hashed one.
+
+js
+Copy
+Edit
+module.exports = mongoose.model('User', userSchema);
+✅ Creates and exports the Mongoose User model.
+
+🔐 middleware/auth.js – JWT Protection
+js
+Copy
+Edit
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
+✅ Imports JWT and User model.
+
+js
+Copy
+Edit
+const protect = async (req, res, next) => {
+  try {
+    const token = req.cookies?.token;
+    if (!token) {
+      return res.status(401).json({ message: 'Not authorized, token missing' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id).select('-password');
+    if (!user) {
+      return res.status(401).json({ message: 'Not authorized, user not found' });
+    }
+
+    req.user = user;
+    next();
+  } catch (err) {
+    console.error('Auth Middleware Error:', err.message);
+    res.status(401).json({ message: 'Not authorized, token failed' });
+  }
+};
+✅ Middleware to protect private routes.
+
+Reads token from cookie
+
+Verifies it
+
+Fetches user
+
+Attaches user to request
+
+js
+Copy
+Edit
+module.exports = { protect };
+✅ Exports the middleware function.
+
+🔑 routes/auth.js – Auth Routes
+js
+Copy
+Edit
+const express = require('express');
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
+const { protect } = require('../middleware/auth');
+const router = express.Router();
+✅ Sets up the router and imports dependencies.
+
+🔐 Token generator
+js
+Copy
+Edit
+const generateToken = (res, id) => {
+  const token = jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+  });
+};
+✅ Creates a JWT token and stores it in a secure cookie.
+
+📩 Register
+js
+Copy
+Edit
+router.post('/register', async (req, res) => {
+  const { name, email, password, confirmPassword } = req.body;
+
+  if (!name || !email || !password || password !== confirmPassword) {
+    return res.status(400).json({ message: 'Invalid registration data' });
+  }
+
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    return res.status(400).json({ message: 'User already exists' });
+  }
+
+  const user = await User.create({ name, email, password });
+  generateToken(res, user._id);
+
+  res.status(201).json({
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    isAdmin: user.isAdmin,
+  });
+});
+🔑 Login
+js
+Copy
+Edit
+router.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+  const user = await User.findOne({ email }).select('+password');
+
+  if (!user || !(await user.matchPassword(password))) {
+    return res.status(401).json({ message: 'Invalid email or password' });
+  }
+
+  generateToken(res, user._id);
+
+  res.json({
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    isAdmin: user.isAdmin,
+  });
+});
+👤 Profile (Protected)
+js
+Copy
+Edit
+router.get('/profile', protect, (req, res) => {
+  res.json({
+    _id: req.user._id,
+    name: req.user.name,
+    email: req.user.email,
+    isAdmin: req.user.isAdmin,
+  });
+});
+🚪 Logout
+js
+Copy
+Edit
+router.post('/logout', (req, res) => {
+  res.clearCookie('token').json({ message: 'Logged out' });
+});
+js
+Copy
+Edit
+module.exports = router;
+✅ Exports the router so server.js can use it.
+
