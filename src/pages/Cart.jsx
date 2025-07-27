@@ -1,13 +1,20 @@
-import { Link } from 'react-router-dom';
-import { Trash2, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { useCart } from '@/contexts/CartContext';
-import { useToast } from '@/hooks/use-toast';
+import { Link } from "react-router-dom";
+import { Trash2, Plus, Minus, ShoppingBag, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { useCart } from "@/contexts/CartContext";
+import { useToast } from "@/hooks/use-toast";
 
 const Cart = () => {
-  const { items, removeFromCart, updateQuantity, clearCart, totalItems, totalPrice } = useCart();
+  const {
+    items,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    totalItems,
+    totalPrice,
+  } = useCart();
   const { toast } = useToast();
 
   const handleRemoveItem = (id, name) => {
@@ -31,7 +38,9 @@ const Cart = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <ShoppingBag className="w-24 h-24 text-gray-300 mx-auto mb-6" />
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Your cart is empty</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            Your cart is empty
+          </h1>
           <p className="text-gray-600 mb-8">
             Looks like you haven't added any items to your cart yet.
           </p>
@@ -68,14 +77,20 @@ const Cart = () => {
                       className="w-20 h-20 object-cover rounded-lg"
                     />
                     <div className="flex-1">
-                      <h3 className="font-semibold text-lg mb-1">{item.name}</h3>
-                      <p className="text-gray-600 text-sm mb-2">{item.category}</p>
-                      <p className="font-bold text-lg">${item.price}</p>
+                      <h3 className="font-semibold text-lg mb-1">
+                        {item.name}
+                      </h3>
+                      <p className="text-gray-600 text-sm mb-2">
+                        {item.category}
+                      </p>
+                      <p className="font-bold text-lg">₹{item.price}</p>
                     </div>
                     <div className="flex items-center gap-3">
                       <div className="flex items-center border rounded-md">
                         <button
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          onClick={() =>
+                            updateQuantity(item.id, item.quantity - 1)
+                          }
                           className="p-2 hover:bg-gray-100"
                         >
                           <Minus className="w-4 h-4" />
@@ -84,7 +99,9 @@ const Cart = () => {
                           {item.quantity}
                         </span>
                         <button
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          onClick={() =>
+                            updateQuantity(item.id, item.quantity + 1)
+                          }
                           className="p-2 hover:bg-gray-100"
                         >
                           <Plus className="w-4 h-4" />
@@ -113,7 +130,7 @@ const Cart = () => {
               <CardContent className="space-y-4">
                 <div className="flex justify-between">
                   <span>Items ({totalItems})</span>
-                  <span>${totalPrice.toFixed(2)}</span>
+                  <span>₹{totalPrice.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Shipping</span>
@@ -121,12 +138,12 @@ const Cart = () => {
                 </div>
                 <div className="flex justify-between">
                   <span>Tax</span>
-                  <span>${(totalPrice * 0.08).toFixed(2)}</span>
+                  <span>₹{(totalPrice * 0.08).toFixed(2)}</span>
                 </div>
                 <Separator />
                 <div className="flex justify-between text-lg font-bold">
                   <span>Total</span>
-                  <span>${(totalPrice * 1.08).toFixed(2)}</span>
+                  <span>₹{(totalPrice * 1.08).toFixed(2)}</span>
                 </div>
                 <Button asChild className="w-full">
                   <Link to="/checkout">

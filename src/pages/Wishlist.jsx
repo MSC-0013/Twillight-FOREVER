@@ -1,10 +1,10 @@
-import { Link } from 'react-router-dom';
-import { Heart, ShoppingCart, Trash2, ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { useWishlist } from '@/contexts/WishlistContext';
-import { useCart } from '@/contexts/CartContext';
-import { useToast } from '@/hooks/use-toast';
+import { Link } from "react-router-dom";
+import { Heart, ShoppingCart, Trash2, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { useWishlist } from "@/contexts/WishlistContext";
+import { useCart } from "@/contexts/CartContext";
+import { useToast } from "@/hooks/use-toast";
 
 const Wishlist = () => {
   const { items, removeFromWishlist, clearWishlist } = useWishlist();
@@ -32,7 +32,9 @@ const Wishlist = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <Heart className="w-24 h-24 text-gray-300 mx-auto mb-6" />
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Your wishlist is empty</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            Your wishlist is empty
+          </h1>
           <p className="text-gray-600 mb-8">
             Save items you love to your wishlist for later.
           </p>
@@ -79,7 +81,8 @@ const Wishlist = () => {
                   </h3>
                 </Link>
                 <p className="text-sm text-gray-600 mb-2">{item.category}</p>
-                <p className="text-lg font-bold mb-4">${item.price}</p>
+                <p className="text-lg font-bold mb-4">₹{item.price}</p>
+
                 <div className="flex gap-2">
                   <Button
                     onClick={() => handleAddToCart(item)}
