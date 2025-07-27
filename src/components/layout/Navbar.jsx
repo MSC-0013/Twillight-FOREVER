@@ -29,19 +29,12 @@ import { useWishlist } from '@/contexts/WishlistContext';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const { user, logout, isAuthenticated, isAdmin } = useAuth();
   const { totalItems, clearCart } = useCart();
   const { items: wishlistItems, clearWishlist } = useWishlist();
   const navigate = useNavigate();
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/products?search=${encodeURIComponent(searchQuery)}`);
-    }
-  };
-
+  
   const handleLogout = () => {
     logout();
     clearCart();
@@ -65,20 +58,20 @@ const Navbar = () => {
           </Link>
 
           {/* Search Bar */}
-          <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-xl mx-6">
+          <form className="hidden md:flex flex-1 max-w-xl mx-6">
             <div className="relative w-full">
               <Input
                 type="text"
                 placeholder="Search products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 pr-4 h-10 rounded-lg border border-gray-300 focus:border-black transition-colors"
               />
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             </div>
-            <Button type="submit" className="ml-2 h-10 px-6 rounded-lg bg-black hover:bg-gray-800 text-white">
-              Search
-            </Button>
+            <Link to = "/products">
+              <Button type="submit" className="ml-2 h-10 px-6 rounded-lg bg-black hover:bg-gray-800 text-white">
+                Search
+              </Button>
+            </Link>
           </form>
 
           {/* Navigation Items */}
@@ -158,10 +151,10 @@ const Navbar = () => {
               </DropdownMenu>
             ) : (
               <div className="flex items-center space-x-2">
-                <Button variant="ghost" asChild className="">
+                <Button variant="ghost">
                   <Link to="/login">Login</Link>
                 </Button>
-                <Button asChild className="bg-black  text-white">
+                <Button >
                   <Link to="/register">Sign Up</Link>
                 </Button>
               </div>
@@ -179,16 +172,15 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Search */}
-        <form onSubmit={handleSearch} className="md:hidden pb-3">
+        <form className="md:hidden pb-3">
           <div className="relative">
             <Input
               type="text"
               placeholder="Search products..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-8 h-10 rounded-lg"
             />
             <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+
           </div>
         </form>
       </div>
