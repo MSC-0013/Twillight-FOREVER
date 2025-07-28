@@ -8,27 +8,50 @@ FOREVER is a sleek, visually captivating React-based frontend with Tailwind CSS 
 
 📁 Project Structure
 
-FOREVER/
-├── public/                  # Static assets & favicon
-├── src/
-│   ├── components/          # Reusable UI components (Navbar, Footer, Cards, etc.)
-│   ├── pages/               # Route-based pages (Home, Login, Register, Product, etc.)
-│   ├── admin/               # Admin Dashboard components & logic
-│   ├── assets/              # Images, icons, SVGs
-│   ├── screenshots/         # Images for documentation
-│   ├── styles/              # Tailwind and custom CSS files
-│   ├── App.js               # Main app with routes
-│   └── index.js             # App entry point
-├── server/                  # Express backend
-│   ├── middleware/          # JWT auth middleware
-│   ├── models/              # MongoDB schemas
-│   ├── routes/              # API routes (auth, users, products, etc.)
-│   └── server.js            # Server configuration
-├── .env                     # Environment variables (Mongo URI, JWT secret)
-├── tailwind.config.js       # Tailwind CSS configuration
-├── postcss.config.js        # PostCSS configuration
-├── package.json             # Dependencies and scripts
-└── README.md                # Project documentation
+<pre>
+🌍 FOREVER/
+├── 📄 .env                      # 🔧 Frontend environment (VITE_API_URL)
+├── 🖼️ public/                  # 🌐 Static public assets (logos, images)
+├── 📸 screenshots/             # 📷 Screenshots used in README or demo
+├── 🖥️ server/                  # 🧠 Express.js Backend
+│   ├── 📄 .env                 # 🔐 Server secrets (DB_URI, JWT_SECRET)
+│   ├── 🧩 db.js                # 🗃️ MongoDB connection logic
+│   ├── 🛡️ middleware/         # 🧰 Middlewares (auth, error handling)
+│   ├── 🧬 models/              # 🧾 Mongoose schemas and models
+│   ├── 🛣️ routes/             # 🧭 Express routes (auth, products, orders)
+│   └── 🚀 server.js           # 🔥 Entry point of backend server
+├── 💻 src/                     # 🎨 React Frontend
+│   ├── 🖼️ assets/              # 🎨 Images, icons, and fonts
+│   ├── 🧩 components/          # 🧱 Reusable UI components (Button, Card, etc.)
+│   ├── 🌐 contexts/            # 🔄 Context API (Cart, Wishlist, Auth)
+│   ├── 🧪 data/                # 🔢 Mock data or sample seeders
+│   ├── 🪝 hooks/               # 🧠 Custom React hooks (useCart, useToast)
+│   ├── 🧰 lib/                 # 🔧 Utility functions (formatters, helpers)
+│   ├── 📄 App.jsx              # 🧠 Main app layout
+│   ├── 🧠 main.jsx             # 🧵 Entry point for ReactDOM
+│   ├── 🎨 App.css              # 💅 Global styles
+│   ├── 📄 index.css            # 🎨 Tailwind + custom styles
+│   └── 🗂️ pages/              # 📄 Route pages (Home, Products, Cart, etc.)
+│       ├── 👨‍💻 admin/         # 🔐 Admin-specific pages
+│       ├── 🔐 auth/           # 🔑 Login and Register pages
+│       ├── 🛒 Cart.jsx
+│       ├── ✅ Checkout.jsx
+│       ├── 🧾 Contact.jsx
+│       ├── ❓ Help.jsx
+│       ├── 🏠 Home.jsx
+│       ├── ⚙️ Index.jsx
+│       ├── ❌ NotFound.jsx
+│       ├── 📦 OrderConfirmation.jsx
+│       ├── 📦 OrderDetails.jsx
+│       ├── 🧪 ProductDetails.jsx
+│       ├── 🛍️ Products.jsx
+│       ├── 👤 Profile.jsx
+│       └── ❤️ Wishlist.jsx
+├── ⚙️ tailwind.config.js       # Tailwind configuration
+├── ⚙️ vite.config.js           # Vite project configuration
+├── 📦 package.json             # Project metadata and scripts
+└── 📝 README.md                # 📘 Project description and guide
+</pre>
 
 ✨ Features by Page
 
