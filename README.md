@@ -53,6 +53,22 @@ FOREVER is a sleek, visually captivating React-based frontend with Tailwind CSS 
 └── 📝 README.md                # 📘 Project description and guide
 </pre>
 
+🧰 Tech Stack
+
+| Tech              | Usage                                   |
+| ----------------- | --------------------------------------- |
+| **React.js**      | Frontend Framework                      |
+| **Tailwind CSS**  | Styling with utility classes            |
+| **Framer Motion** | Smooth animations and transitions       |
+| **React Router**  | Routing and page navigation             |
+| **Heroicons**     | Clean, accessible icons                 |
+| **Express.js**    | Backend API and routing                 |
+| **MongoDB Atlas** | Database for user and product data      |
+| **JWT**           | Secure login token management           |
+| **bcryptjs**      | Password hashing for secure storage     |
+| **Chart.js**      | (Optional) Visual dashboard data charts |
+
+
 ✨ Features by Page
 
 📊 Admin Dashboard
@@ -144,20 +160,6 @@ Integrated with product DB
 </pre>
 <p float="left"> <img src="screenshots/Cart.png" width="280"/> <img src="screenshots/Wishlist.png" width="280"/> </p>
 
-🧰 Tech Stack
-
-| Tech              | Usage                                   |
-| ----------------- | --------------------------------------- |
-| **React.js**      | Frontend Framework                      |
-| **Tailwind CSS**  | Styling with utility classes            |
-| **Framer Motion** | Smooth animations and transitions       |
-| **React Router**  | Routing and page navigation             |
-| **Heroicons**     | Clean, accessible icons                 |
-| **Express.js**    | Backend API and routing                 |
-| **MongoDB Atlas** | Database for user and product data      |
-| **JWT**           | Secure login token management           |
-| **bcryptjs**      | Password hashing for secure storage     |
-| **Chart.js**      | (Optional) Visual dashboard data charts |
 
 🛠️ Getting Started
 <pre>
