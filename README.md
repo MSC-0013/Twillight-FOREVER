@@ -1,137 +1,196 @@
-# 🌌 FOREVER — Frontend Webpage with Admin Dashboard
+# 🌌 FOREVER — MERN stack Shopping web application
 
-Welcome to **FOREVER**, a modern and visually rich frontend webpage built with React, Tailwind CSS, and Framer Motion. It features a stunning animated landing page along with an expandable Admin Dashboard designed for dynamic data management and interface control.
+FOREVER is a sleek, visually captivating React-based frontend with Tailwind CSS and Framer Motion. It features a polished animated landing page and a powerful Admin Dashboard for dynamic data management.
 
-> 🚀 Project Repository: [Twillight-FOREVER](https://github.com/MSC-0013/Twillight-FOREVER)  
-> 🌐 Live Demo: *(https://twillight-forever.vercel.app/)*
+🎯 Project Repository: Twillight‑FOREVER
+🚀 Live Demo (Vercel): [twillight-forever.vercel.app](https://twillight-forever.vercel.app)
 
----
+📁 Project Structure
 
-## 📁 Project Structure
-
-Twillight-FOREVER/
-│
-├── public/ # Static files and favicon
+FOREVER/
+├── public/                  # Static assets & favicon
 ├── src/
-│ ├── components/ # Navbar, Footer, Cards, etc.
-│ ├── pages/ # Home, About, Contact, etc.
-│ ├── admin/ # Admin dashboard components & logic
-│ ├── assets/ # Images, icons, SVGs
-│ ├── styles/ # Tailwind and custom CSS
-│ ├── App.js # App structure and routes
-│ └── index.js # App entry point
-├── tailwind.config.js # Tailwind configuration
-├── postcss.config.js # PostCSS plugins
-├── package.json # Dependencies and scripts
-└── README.md # Project documentation
+│   ├── components/          # Navbar, Footer, Cards, etc.
+│   ├── pages/               # Home, Login,Register,Product, Wishlist etc.
+│   ├── admin/               # Dashboard components & logic
+│   ├── assets/              # Images, icons, SVGs
+│   ├── screenshots/         # Screenshot images
+│   ├── styles/              # Tailwind and custom CSS
+│   ├── App.js               # Routes & layout
+│   └── index.js             # App entry point
+├── server/                  # 🆕 Express backend
+│   ├── middleware/
+│   │   └── auth.js          # JWT auth middleware
+│   ├── models/
+│   │   └── User.js          # User model schema
+│   ├── routes/
+│   │   └── auth.js          # Auth routes (login/register)
+│   └── server.js            # Express server setup
+├── .env                     # Environment variables (Mongo URI, JWT secret)
+├── tailwind.config.js
+├── postcss.config.js
+├── package.json
+└── README.md
+           # This documentation
 
-yaml
-Copy
-Edit
-
----
-
-## ✨ Features
-
-### 🌍 Landing Page
-- Interactive and animated Hero section
-- About, Projects, Skills, and Contact sections
-- Smooth scrolling transitions and motion effects
-- Fully responsive design for all screen sizes
-- Custom fonts, gradients, and dark theme
-
-### 🔐 Admin Dashboard
-- Dashboard layout with sidebar and header
-- Placeholder widgets (stats, users, traffic, etc.)
-- Designed to connect with APIs or mock data
-- Easily customizable and scalable architecture
-
----
-
-## 🧰 Tech Stack
-
-| Technology       | Purpose                                |
-|------------------|-----------------------------------------|
-| **React.js**     | Component-based UI                      |
-| **Tailwind CSS** | Utility-first responsive styling        |
-| **Framer Motion**| Advanced animations and transitions     |
-| **React Router** | Client-side routing                     |
-| **Heroicons**    | Beautiful, accessible icon components   |
-| **Chart.js**     | (Optional) Dashboard data visualization |
-
----
-
-## 🛠️ Getting Started
-
-### Prerequisites
-
-Make sure you have the following installed:
-- [Node.js](https://nodejs.org/) (v16 or higher)
-- npm or yarn
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/MSC-0013/Twillight-FOREVER.git
-cd Twillight-FOREVER
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-The app will be available at http://localhost:5173 (or as indicated by Vite).
-
-📸 Screenshots
-🖼️ Landing Page
-(Insert screenshot here)
+✨ Features by Page
 
 📊 Admin Dashboard
-(Insert screenshot here)
+URL: /admin
+
+Sidebar + topbar navigation layout
+
+User stats & order summaries
+
+Dynamic chart components
+
+Placeholder API integration points
+![Admin1](screenshots/Admin1.png)  
+![Admin2](screenshots/Admin2.png)  
+![Admin3](screenshots/Admin3.png)  
+![Admin4](screenshots/Admin4.png)  
+![Admin5](screenshots/Admin5.png)  
+![Admin6](screenshots/Admin6.png)
+
+🏠 Home Page
+URL: /
+
+Animated hero section using Framer Motion
+
+Links to featured products
+
+Scroll reveal transitions
+
+Dark mode support
+
+Custom font + Tailwind utilities
+
+![Home1](screenshots/Home1.png)
+![Home2](screenshots/Home2.png)
+![Home3](screenshots/Home3.png)
+![Home4](screenshots/Home4.png)
+![Home5](screenshots/Home5.png)
+![Home6](screenshots/Home6.png)
+![Home7](screenshots/Home7.png)
+
+ Product Page
+URL: /product/:id
+
+Detailed product information
+
+Add to Cart / Wishlist functionality
+
+Quantity selector
+
+Price display with styling
+
+🔐 Login & Register Pages
+URL: /login, /register
+
+User authentication via Express backend
+
+JWT-based login system
+
+Form validation
+
+Password encryption using bcrypt.js
+
+![Login](screenshots/Login.png)  
+![Register](screenshots/Register.png)
+
+📋 Order Pages
+URL: /orders, /order/:id
+
+Order history display
+
+Individual order details (date, price, status)
+
+Receipt download (optional)
+
+![Order1](screenshots/Order1.png)  
+![Order2](screenshots/Order2.png)  
+![Order3](screenshots/Order3.png)  
+![Recipt](screenshots/Receipt.png)
+
+👤 Profile Page
+URL: /profile
+
+Displays user data: email, name, etc.
+
+Update user info
+
+View past orders
+![Profile](screenshots/Profile.png)  
+![Profile2](screenshots/Profile2.png)
+
+💖 Cart & Wishlist
+URL: /cart, /wishlist
+
+Add/remove items
+
+Quantity update controls
+
+Responsive layout
+
+Integrated with product DB
+
+![Product1](screenshots/Product1.png)  
+![Product2](screenshots/Product2.png)  
+![Product3](screenshots/Product3.png)  
+![Wishlist](screenshots/Wishlist.png)  
+![Cart](screenshots/Cart.png)
+
+🧰 Tech Stack
+
+| Tech              | Usage                                   |
+| ----------------- | --------------------------------------- |
+| **React.js**      | Frontend Framework                      |
+| **Tailwind CSS**  | Styling with utility classes            |
+| **Framer Motion** | Smooth animations and transitions       |
+| **React Router**  | Routing and page navigation             |
+| **Heroicons**     | Clean, accessible icons                 |
+| **Express.js**    | Backend API and routing                 |
+| **MongoDB Atlas** | Database for user and product data      |
+| **JWT**           | Secure login token management           |
+| **bcryptjs**      | Password hashing for secure storage     |
+| **Chart.js**      | (Optional) Visual dashboard data charts |
+
+🛠️ Getting Started
+Prerequisites
+Node.js v16+
+
+MongoDB URI (for .env)
+
+Vite + React project bootstrapped
+
+Installation
+
+git clone [https://github.com/MSC-0013/Twillight-FOREVER.git](https://github.com/MSC-0013/Twillight-FOREVER.git)
+cd Twillight-FOREVER
+npm install
+npm run dev
+
+Then for server:
+
+cd server
+npm install
+node server.js
 
 ⚙️ Deployment
-This project can be easily deployed on platforms like:
+Deployed frontend and backend separately:
 
-Vercel
+Frontend: Vercel, Netlify, GitHub Pages
 
-Netlify
-
-GitHub Pages (for static frontend)
-
-Firebase Hosting
-
-To create a production build:
-
-bash
-Copy
-Edit
-npm run build
-🤝 Contributing
-Contributions are welcome and appreciated!
-
-bash
-Copy
-Edit
-# Steps to contribute:
-- Fork the repository
-- Create a new branch: git checkout -b feature/YourFeature
-- Make your changes and commit: git commit -m "Add YourFeature"
-- Push to your branch: git push origin feature/YourFeature
-- Submit a Pull Request
-📄 License
-This project is licensed under the MIT License.
-Feel free to use, modify, and distribute this project for both personal and commercial purposes.
+Backend: Render, Railway, or Firebase Functions
 
 👤 Author
-MSC
+Soumayshree Rout
+
 🔗 GitHub: @MSC-0013
-🌟 If you like this project, give it a ⭐ on GitHub to show support!
+
+🌐 Portfolio: [[Portfolio](https://port-folio-tau-coral.vercel.app)]
 
 📬 Contact
-For suggestions, collaborations, or questions:
+📧 Email: <soumyashreerout99@gmail.com>
 
-Email: [Add your email here]
-
-LinkedIn: [Add your LinkedIn profile here]
-
+💼 LinkedIn: [Linkedin Profile](https://www.linkedin.com/in/soumyashree-rout-500671253)
