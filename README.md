@@ -3,6 +3,7 @@
 FOREVER is a sleek, visually captivating React-based frontend with Tailwind CSS and Framer Motion. It features a polished animated landing page and a powerful Admin Dashboard for dynamic data management.
 
 🎯 Project Repository: Twillight‑FOREVER
+
 🚀 Live Demo (Vercel): [twillight-forever.vercel.app](https://twillight-forever.vercel.app)
 
 📁 Project Structure
@@ -10,28 +11,24 @@ FOREVER is a sleek, visually captivating React-based frontend with Tailwind CSS 
 FOREVER/
 ├── public/                  # Static assets & favicon
 ├── src/
-│   ├── components/          # Navbar, Footer, Cards, etc.
-│   ├── pages/               # Home, Login,Register,Product, Wishlist etc.
-│   ├── admin/               # Dashboard components & logic
+│   ├── components/          # Reusable UI components (Navbar, Footer, Cards, etc.)
+│   ├── pages/               # Route-based pages (Home, Login, Register, Product, etc.)
+│   ├── admin/               # Admin Dashboard components & logic
 │   ├── assets/              # Images, icons, SVGs
-│   ├── screenshots/         # Screenshot images
-│   ├── styles/              # Tailwind and custom CSS
-│   ├── App.js               # Routes & layout
+│   ├── screenshots/         # Images for documentation
+│   ├── styles/              # Tailwind and custom CSS files
+│   ├── App.js               # Main app with routes
 │   └── index.js             # App entry point
-├── server/                  # 🆕 Express backend
-│   ├── middleware/
-│   │   └── auth.js          # JWT auth middleware
-│   ├── models/
-│   │   └── User.js          # User model schema
-│   ├── routes/
-│   │   └── auth.js          # Auth routes (login/register)
-│   └── server.js            # Express server setup
+├── server/                  # Express backend
+│   ├── middleware/          # JWT auth middleware
+│   ├── models/              # MongoDB schemas
+│   ├── routes/              # API routes (auth, users, products, etc.)
+│   └── server.js            # Server configuration
 ├── .env                     # Environment variables (Mongo URI, JWT secret)
-├── tailwind.config.js
-├── postcss.config.js
-├── package.json
-└── README.md
-           # This documentation
+├── tailwind.config.js       # Tailwind CSS configuration
+├── postcss.config.js        # PostCSS configuration
+├── package.json             # Dependencies and scripts
+└── README.md                # Project documentation
 
 ✨ Features by Page
 
@@ -45,12 +42,7 @@ User stats & order summaries
 Dynamic chart components
 
 Placeholder API integration points
-![Admin1](screenshots/Admin1.png)  
-![Admin2](screenshots/Admin2.png)  
-![Admin3](screenshots/Admin3.png)  
-![Admin4](screenshots/Admin4.png)  
-![Admin5](screenshots/Admin5.png)  
-![Admin6](screenshots/Admin6.png)
+<p float="left"> <img src="screenshots/Admin1.png" width="260"/> <img src="screenshots/Admin2.png" width="260"/> <img src="screenshots/Admin3.png" width="260"/> <img src="screenshots/Admin4.png" width="260"/> <img src="screenshots/Admin5.png" width="260"/> <img src="screenshots/Admin6.png" width="260"/> </p>
 
 🏠 Home Page
 URL: /
@@ -65,13 +57,7 @@ Dark mode support
 
 Custom font + Tailwind utilities
 
-![Home1](screenshots/Home1.png)
-![Home2](screenshots/Home2.png)
-![Home3](screenshots/Home3.png)
-![Home4](screenshots/Home4.png)
-![Home5](screenshots/Home5.png)
-![Home6](screenshots/Home6.png)
-![Home7](screenshots/Home7.png)
+<p float="left"> <img src="screenshots/Home1.png" width="260"/> <img src="screenshots/Home2.png" width="260"/> <img src="screenshots/Home3.png" width="260"/> <img src="screenshots/Home4.png" width="260"/> <img src="screenshots/Home5.png" width="260"/> <img src="screenshots/Home6.png" width="260"/> <img src="screenshots/Home7.png" width="260"/> </p>
 
  Product Page
 URL: /product/:id
@@ -84,6 +70,8 @@ Quantity selector
 
 Price display with styling
 
+<p float="left"> <img src="screenshots/Product1.png" width="270"/> <img src="screenshots/Product2.png" width="270"/> <img src="screenshots/Product3.png" width="270"/> </p>
+
 🔐 Login & Register Pages
 URL: /login, /register
 
@@ -95,8 +83,7 @@ Form validation
 
 Password encryption using bcrypt.js
 
-![Login](screenshots/Login.png)  
-![Register](screenshots/Register.png)
+<p float="left"> <img src="screenshots/Login.png" width="280"/> <img src="screenshots/Register.png" width="280"/> </p>
 
 📋 Order Pages
 URL: /orders, /order/:id
@@ -107,10 +94,7 @@ Individual order details (date, price, status)
 
 Receipt download (optional)
 
-![Order1](screenshots/Order1.png)  
-![Order2](screenshots/Order2.png)  
-![Order3](screenshots/Order3.png)  
-![Recipt](screenshots/Receipt.png)
+<p float="left"> <img src="screenshots/Order1.png" width="260"/> <img src="screenshots/Order2.png" width="260"/> <img src="screenshots/Order3.png" width="260"/> <img src="screenshots/Receipt.png" width="260"/> </p>
 
 👤 Profile Page
 URL: /profile
@@ -120,8 +104,8 @@ Displays user data: email, name, etc.
 Update user info
 
 View past orders
-![Profile](screenshots/Profile.png)  
-![Profile2](screenshots/Profile2.png)
+
+<p float="left"> <img src="screenshots/Profile.png" width="280"/> <img src="screenshots/Profile2.png" width="280"/> </p>
 
 💖 Cart & Wishlist
 URL: /cart, /wishlist
@@ -134,11 +118,7 @@ Responsive layout
 
 Integrated with product DB
 
-![Product1](screenshots/Product1.png)  
-![Product2](screenshots/Product2.png)  
-![Product3](screenshots/Product3.png)  
-![Wishlist](screenshots/Wishlist.png)  
-![Cart](screenshots/Cart.png)
+<p float="left"> <img src="screenshots/Cart.png" width="280"/> <img src="screenshots/Wishlist.png" width="280"/> </p>
 
 🧰 Tech Stack
 
