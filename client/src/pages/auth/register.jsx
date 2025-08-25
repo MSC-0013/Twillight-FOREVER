@@ -35,31 +35,47 @@ function AuthRegister() {
     });
   }
 
-  console.log(formData);
-
   return (
-    <div className="mx-auto w-full max-w-md space-y-6">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          Create new account
-        </h1>
-        <p className="mt-2">
-          Already have an account
-          <Link
-            className="font-medium ml-2 text-primary hover:underline"
-            to="/auth/login"
-          >
-            Login
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 px-4">
+      <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-8 sm:p-10 animate-fadeIn">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-extrabold text-purple-700 tracking-tight">
+            FOREVER
+          </h1>
+          <h2 className="text-2xl font-semibold text-gray-700 mt-2">
+            Create a new account
+          </h2>
+          <p className="mt-3 text-gray-500 text-sm">
+            Already have an account?{" "}
+            <Link
+              className="text-purple-600 font-medium hover:underline"
+              to="/auth/login"
+            >
+              Sign In
+            </Link>
+          </p>
+        </div>
+
+        <CommonForm
+          formControls={registerFormControls}
+          buttonText={"Sign Up"}
+          formData={formData}
+          setFormData={setFormData}
+          onSubmit={onSubmit}
+        />
+
+        <p className="mt-6 text-center text-gray-400 text-sm">
+          By creating an account, you agree to FOREVER's{" "}
+          <Link className="underline hover:text-purple-600" to="#">
+            Terms of Service
+          </Link>{" "}
+          and{" "}
+          <Link className="underline hover:text-purple-600" to="#">
+            Privacy Policy
           </Link>
+          .
         </p>
       </div>
-      <CommonForm
-        formControls={registerFormControls}
-        buttonText={"Sign Up"}
-        formData={formData}
-        setFormData={setFormData}
-        onSubmit={onSubmit}
-      />
     </div>
   );
 }

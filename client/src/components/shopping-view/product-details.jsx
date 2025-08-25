@@ -12,63 +12,50 @@ import { Label } from "../ui/label";
 import StarRatingComponent from "../common/star-rating";
 import { useEffect, useState } from "react";
 import { addReview, getReviews } from "@/store/shop/review-slice";
+import { useNavigate } from "react-router-dom";
 
 function ProductDetailsDialog({ open, setOpen, productDetails }) {
   const [reviewMsg, setReviewMsg] = useState("");
   const [rating, setRating] = useState(0);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shopCart);
   const { reviews } = useSelector((state) => state.shopReview);
-
   const { toast } = useToast();
 
-  function handleRatingChange(getRating) {
-    console.log(getRating, "getRating");
+  const averageReview =
+    reviews && reviews.length > 0
+      ? reviews.reduce((sum, r) => sum + r.reviewValue, 0) / reviews.length
+      : 0;
 
-    setRating(getRating);
+  function handleRatingChange(value) {
+    setRating(value);
   }
 
-  function handleAddToCart(getCurrentProductId, getTotalStock) {
-    let getCartItems = cartItems.items || [];
-
-    if (getCartItems.length) {
-      const indexOfCurrentItem = getCartItems.findIndex(
-        (item) => item.productId === getCurrentProductId
-      );
-      if (indexOfCurrentItem > -1) {
-        const getQuantity = getCartItems[indexOfCurrentItem].quantity;
-        if (getQuantity + 1 > getTotalStock) {
-          toast({
-            title: `Only ${getQuantity} quantity can be added for this item`,
-            variant: "destructive",
-          });
-
-          return;
-        }
-      }
+  function handleAddToCart(productId, stock) {
+    const existingItem = cartItems.items?.find((i) => i.productId === productId);
+    if (existingItem && existingItem.quantity + 1 > stock) {
+      toast({ title: `Only ${existingItem.quantity} quantity can be added`, variant: "destructive" });
+      return;
     }
-    dispatch(
-      addToCart({
-        userId: user?.id,
-        productId: getCurrentProductId,
-        quantity: 1,
-      })
-    ).then((data) => {
-      if (data?.payload?.success) {
+    dispatch(addToCart({ userId: user?.id, productId, quantity: 1 })).then((res) => {
+      if (res?.payload?.success) {
         dispatch(fetchCartItems(user?.id));
-        toast({
-          title: "Product is added to cart",
-        });
+        toast({ title: "Product added to cart" });
       }
     });
   }
 
-  function handleDialogClose() {
-    setOpen(false);
-    dispatch(setProductDetails());
-    setRating(0);
-    setReviewMsg("");
+  function handleBuyNow() {
+    if (!user) {
+      toast({ title: "Please login to continue", variant: "destructive" });
+      return;
+    }
+    // Optionally, add product to cart before navigating
+    dispatch(addToCart({ userId: user?.id, productId: productDetails._id, quantity: 1 })).then(() => {
+      navigate("/checkout");
+    });
   }
 
   function handleAddReview() {
@@ -80,140 +67,145 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
         reviewMessage: reviewMsg,
         reviewValue: rating,
       })
-    ).then((data) => {
-      if (data.payload.success) {
+    ).then((res) => {
+      if (res.payload.success) {
         setRating(0);
         setReviewMsg("");
         dispatch(getReviews(productDetails?._id));
-        toast({
-          title: "Review added successfully!",
-        });
+        toast({ title: "Review added successfully!" });
       }
     });
   }
 
+  function handleClose() {
+    setOpen(false);
+    dispatch(setProductDetails());
+    setRating(0);
+    setReviewMsg("");
+  }
+
   useEffect(() => {
-    if (productDetails !== null) dispatch(getReviews(productDetails?._id));
+    if (productDetails) dispatch(getReviews(productDetails?._id));
   }, [productDetails]);
 
-  console.log(reviews, "reviews");
-
-  const averageReview =
-    reviews && reviews.length > 0
-      ? reviews.reduce((sum, reviewItem) => sum + reviewItem.reviewValue, 0) /
-        reviews.length
-      : 0;
-
   return (
-    <Dialog open={open} onOpenChange={handleDialogClose}>
-      <DialogContent className="grid grid-cols-2 gap-8 sm:p-12 max-w-[90vw] sm:max-w-[80vw] lg:max-w-[70vw]">
-        <div className="relative overflow-hidden rounded-lg">
+    <Dialog open={open} onOpenChange={handleClose}>
+      <DialogContent className="w-full h-full max-w-7xl p-6 sm:p-12 grid sm:grid-cols-3 gap-8 overflow-auto">
+        {/* Product Image */}
+        <div className="flex items-center justify-center overflow-hidden rounded-lg bg-gray-100 col-span-1">
           <img
             src={productDetails?.image}
             alt={productDetails?.title}
-            width={600}
-            height={600}
-            className="aspect-square w-full object-cover"
+            className="object-contain w-full h-full"
           />
         </div>
-        <div className="">
+
+        {/* Product Details */}
+        <div className="flex flex-col justify-between col-span-2 gap-6">
           <div>
-            <h1 className="text-3xl font-extrabold">{productDetails?.title}</h1>
-            <p className="text-muted-foreground text-2xl mb-5 mt-4">
-              {productDetails?.description}
-            </p>
-          </div>
-          <div className="flex items-center justify-between">
-            <p
-              className={`text-3xl font-bold text-primary ${
-                productDetails?.salePrice > 0 ? "line-through" : ""
-              }`}
-            >
-              ${productDetails?.price}
-            </p>
-            {productDetails?.salePrice > 0 ? (
-              <p className="text-2xl font-bold text-muted-foreground">
-                ${productDetails?.salePrice}
-              </p>
-            ) : null}
-          </div>
-          <div className="flex items-center gap-2 mt-2">
-            <div className="flex items-center gap-0.5">
-              <StarRatingComponent rating={averageReview} />
+            <h1 className="text-4xl font-extrabold mb-2">{productDetails?.title}</h1>
+            <p className="text-gray-500 text-lg mb-4">{productDetails?.description}</p>
+
+            {/* Info Tiles */}
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div className="bg-gray-50 p-3 rounded-lg shadow-sm">
+                <p className="text-sm text-gray-400">Price</p>
+                <p className="font-bold text-lg text-primary">${productDetails?.price}</p>
+              </div>
+              {productDetails?.salePrice && (
+                <div className="bg-yellow-50 p-3 rounded-lg shadow-sm">
+                  <p className="text-sm text-gray-400">Sale Price</p>
+                  <p className="font-bold text-lg text-orange-500">${productDetails.salePrice}</p>
+                </div>
+              )}
+              <div className="bg-gray-50 p-3 rounded-lg shadow-sm">
+                <p className="text-sm text-gray-400">Stock</p>
+                <p className="font-bold text-lg">{productDetails?.totalStock}</p>
+              </div>
+              <div className="bg-gray-50 p-3 rounded-lg shadow-sm">
+                <p className="text-sm text-gray-400">Category</p>
+                <p className="font-bold text-lg">{productDetails?.category || "N/A"}</p>
+              </div>
+              <div className="bg-gray-50 p-3 rounded-lg shadow-sm">
+                <p className="text-sm text-gray-400">SKU</p>
+                <p className="font-bold text-lg">{productDetails?.sku || "N/A"}</p>
+              </div>
+              <div className="bg-gray-50 p-3 rounded-lg shadow-sm">
+                <p className="text-sm text-gray-400">Brand</p>
+                <p className="font-bold text-lg">{productDetails?.brand || "N/A"}</p>
+              </div>
             </div>
-            <span className="text-muted-foreground">
-              ({averageReview.toFixed(2)})
-            </span>
-          </div>
-          <div className="mt-5 mb-5">
-            {productDetails?.totalStock === 0 ? (
-              <Button className="w-full opacity-60 cursor-not-allowed">
-                Out of Stock
-              </Button>
-            ) : (
-              <Button
-                className="w-full"
-                onClick={() =>
-                  handleAddToCart(
-                    productDetails?._id,
-                    productDetails?.totalStock
-                  )
-                }
-              >
-                Add to Cart
-              </Button>
-            )}
-          </div>
-          <Separator />
-          <div className="max-h-[300px] overflow-auto">
-            <h2 className="text-xl font-bold mb-4">Reviews</h2>
-            <div className="grid gap-6">
-              {reviews && reviews.length > 0 ? (
-                reviews.map((reviewItem) => (
-                  <div className="flex gap-4">
+
+            {/* Rating */}
+            <div className="flex items-center gap-2 mb-5">
+              <StarRatingComponent rating={averageReview} />
+              <span className="text-gray-400">({averageReview.toFixed(2)})</span>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-4 mb-6">
+              {productDetails?.totalStock === 0 ? (
+                <Button disabled className="flex-1 opacity-60 cursor-not-allowed">
+                  Out of Stock
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    className="flex-1"
+                    onClick={() => handleAddToCart(productDetails?._id, productDetails?.totalStock)}
+                  >
+                    Add to Cart
+                  </Button>
+                  <Button
+                    className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                    onClick={handleBuyNow}
+                  >
+                    Buy Now
+                  </Button>
+                </>
+              )}
+            </div>
+
+            <Separator className="my-4" />
+
+            {/* Reviews */}
+            <div className="flex flex-col gap-4 max-h-[300px] overflow-y-auto">
+              <h2 className="text-xl font-bold mb-2">Reviews</h2>
+              {reviews?.length > 0 ? (
+                reviews.map((r) => (
+                  <div key={r._id} className="flex gap-3 items-start">
                     <Avatar className="w-10 h-10 border">
-                      <AvatarFallback>
-                        {reviewItem?.userName[0].toUpperCase()}
-                      </AvatarFallback>
+                      <AvatarFallback>{r.userName[0].toUpperCase()}</AvatarFallback>
                     </Avatar>
-                    <div className="grid gap-1">
+                    <div>
                       <div className="flex items-center gap-2">
-                        <h3 className="font-bold">{reviewItem?.userName}</h3>
+                        <h3 className="font-bold">{r.userName}</h3>
+                        <StarRatingComponent rating={r.reviewValue} />
                       </div>
-                      <div className="flex items-center gap-0.5">
-                        <StarRatingComponent rating={reviewItem?.reviewValue} />
-                      </div>
-                      <p className="text-muted-foreground">
-                        {reviewItem.reviewMessage}
-                      </p>
+                      <p className="text-gray-400">{r.reviewMessage}</p>
                     </div>
                   </div>
                 ))
               ) : (
-                <h1>No Reviews</h1>
+                <p className="text-gray-400">No Reviews</p>
               )}
             </div>
-            <div className="mt-10 flex-col flex gap-2">
-              <Label>Write a review</Label>
-              <div className="flex gap-1">
-                <StarRatingComponent
-                  rating={rating}
-                  handleRatingChange={handleRatingChange}
+
+            {/* Add Review */}
+            {user && (
+              <div className="mt-6 flex flex-col gap-2">
+                <Label>Write a Review</Label>
+                <StarRatingComponent rating={rating} handleRatingChange={handleRatingChange} />
+                <Input
+                  value={reviewMsg}
+                  onChange={(e) => setReviewMsg(e.target.value)}
+                  placeholder="Write your review..."
                 />
+                <Button disabled={!reviewMsg.trim()} onClick={handleAddReview}>
+                  Submit
+                </Button>
               </div>
-              <Input
-                name="reviewMsg"
-                value={reviewMsg}
-                onChange={(event) => setReviewMsg(event.target.value)}
-                placeholder="Write a review..."
-              />
-              <Button
-                onClick={handleAddReview}
-                disabled={reviewMsg.trim() === ""}
-              >
-                Submit
-              </Button>
-            </div>
+            )}
           </div>
         </div>
       </DialogContent>
