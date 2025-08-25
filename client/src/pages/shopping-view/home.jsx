@@ -14,6 +14,7 @@ import {
   Images,
   Heater,
 } from "lucide-react";
+import { SiGoogle , SiApple, SiSony, SiNintendo } from "react-icons/si";
 import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -43,8 +44,24 @@ const brandsWithIcon = [
   { id: "levi", label: "Levi's", icon: Airplay },
   { id: "zara", label: "Zara", icon: Images },
   { id: "h&m", label: "H&M", icon: Heater },
+
+  { id: "apple", label: "Apple", icon: SiApple },
+{ id: "sony", label: "Sony", icon: SiSony },
+{ id: "nintendo", label: "Nintendo", icon: SiNintendo },
+{ id: "google", label: "Google", icon: SiGoogle },
+
+
+  { id: "timeclassic", label: "TimeClassic", icon: WatchIcon },
+  { id: "stylecraft", label: "StyleCraft", icon: Shirt },
+  { id: "elegance", label: "Elegance", icon: Shirt },
+  { id: "luxevision", label: "LuxeVision", icon: Shirt },
 ];
 
+const booksWithIcon = [
+  { id: "harpercollins", label: "HarperCollins", icon: Images },
+  { id: "penguin", label: "Penguin", icon: Images },
+  { id: "scholastic", label: "Scholastic", icon: Images },
+];
 function ShoppingHome() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const { productList, productDetails } = useSelector(
@@ -55,8 +72,7 @@ function ShoppingHome() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { toast } = useToast();
-
-  const banners = landingBanners; // Use landingBanners
+  const banners = landingBanners;
 
   function handleNavigateToListingPage(item, section) {
     sessionStorage.removeItem("filters");
@@ -74,18 +90,14 @@ function ShoppingHome() {
       toast({ title: "Please login to add products to cart" });
       return;
     }
-    dispatch(
-      addToCart({
-        userId: user.id,
-        productId,
-        quantity: 1,
-      })
-    ).then((data) => {
-      if (data?.payload?.success) {
-        dispatch(fetchCartItems(user.id));
-        toast({ title: "Product added to cart" });
+    dispatch(addToCart({ userId: user.id, productId, quantity: 1 })).then(
+      (data) => {
+        if (data?.payload?.success) {
+          dispatch(fetchCartItems(user.id));
+          toast({ title: "Product added to cart" });
+        }
       }
-    });
+    );
   }
 
   useEffect(() => {
@@ -100,7 +112,12 @@ function ShoppingHome() {
   }, [banners]);
 
   useEffect(() => {
-    dispatch(fetchAllFilteredProducts({ filterParams: {}, sortParams: "price-lowtohigh" }));
+    dispatch(
+      fetchAllFilteredProducts({
+        filterParams: {},
+        sortParams: "price-lowtohigh",
+      })
+    );
   }, [dispatch]);
 
   return (
@@ -114,7 +131,11 @@ function ShoppingHome() {
               slide === banners[currentSlide] ? "opacity-100" : "opacity-0"
             }`}
           >
-            <img src={slide.image} alt={slide.title} className="w-full h-full object-cover" />
+            <img
+              src={slide.image}
+              alt={slide.title}
+              className="w-full h-full object-cover"
+            />
             <div className="absolute bottom-10 left-10 text-white">
               <h2 className="text-4xl font-bold">{slide.title}</h2>
               <p className="text-lg mt-2">{slide.subtitle}</p>
@@ -152,12 +173,16 @@ function ShoppingHome() {
       {/* Categories */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">Shop by Category</h2>
+          <h2 className="text-3xl font-bold text-center mb-8">
+            Shop by Category
+          </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {categoriesWithIcon.map((category) => (
               <Card
                 key={category.id}
-                onClick={() => handleNavigateToListingPage(category, "category")}
+                onClick={() =>
+                  handleNavigateToListingPage(category, "category")
+                }
                 className="cursor-pointer hover:shadow-lg transition-shadow"
               >
                 <CardContent className="flex flex-col items-center justify-center p-6">
@@ -184,6 +209,27 @@ function ShoppingHome() {
                 <CardContent className="flex flex-col items-center justify-center p-6">
                   <brand.icon className="w-12 h-12 mb-4 text-primary" />
                   <span className="font-bold">{brand.label}</span>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Books */}
+      <section className="py-12 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-8">Shop by Books</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {booksWithIcon.map((book) => (
+              <Card
+                key={book.id}
+                onClick={() => handleNavigateToListingPage(book, "brand")}
+                className="cursor-pointer hover:shadow-lg transition-shadow"
+              >
+                <CardContent className="flex flex-col items-center justify-center p-6">
+                  <book.icon className="w-12 h-12 mb-4 text-primary" />
+                  <span className="font-bold">{book.label}</span>
                 </CardContent>
               </Card>
             ))}
