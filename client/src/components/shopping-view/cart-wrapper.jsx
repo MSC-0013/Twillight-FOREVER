@@ -24,17 +24,25 @@ function UserCartWrapper({ cartItems, setOpenCartSheet }) {
       <SheetHeader>
         <SheetTitle>Your Cart</SheetTitle>
       </SheetHeader>
+
       <div className="mt-8 space-y-4">
         {cartItems && cartItems.length > 0
-          ? cartItems.map((item) => <UserCartItemsContent cartItem={item} />)
-          : null}
+          ? cartItems.map((item) => (
+              <UserCartItemsContent
+                key={item.productId || item._id} // ✅ ensure a unique key
+                cartItem={item}
+              />
+            ))
+          : <p className="text-center text-gray-500">Your cart is empty.</p>}
       </div>
+
       <div className="mt-8 space-y-4">
         <div className="flex justify-between">
           <span className="font-bold">Total</span>
           <span className="font-bold">${totalCartAmount}</span>
         </div>
       </div>
+
       <Button
         onClick={() => {
           navigate("/shop/checkout");

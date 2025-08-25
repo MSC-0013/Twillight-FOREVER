@@ -5,7 +5,6 @@ import UserCartItemsContent from "@/components/shopping-view/cart-items-content"
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { createNewOrder } from "@/store/shop/order-slice";
-import { Navigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 
 function ShoppingCheckout() {
@@ -16,8 +15,6 @@ function ShoppingCheckout() {
   const [isPaymentStart, setIsPaymemntStart] = useState(false);
   const dispatch = useDispatch();
   const { toast } = useToast();
-
-  console.log(currentSelectedAddress, "cartItems");
 
   const totalCartAmount =
     cartItems && cartItems.items && cartItems.items.length > 0
@@ -33,12 +30,11 @@ function ShoppingCheckout() {
       : 0;
 
   function handleInitiatePaypalPayment() {
-    if (cartItems.length === 0) {
+    if (!cartItems || cartItems.items.length === 0) {
       toast({
         title: "Your cart is empty. Please add items to proceed",
         variant: "destructive",
       });
-
       return;
     }
     if (currentSelectedAddress === null) {
@@ -46,7 +42,6 @@ function ShoppingCheckout() {
         title: "Please select one address to proceed.",
         variant: "destructive",
       });
-
       return;
     }
 
@@ -82,7 +77,6 @@ function ShoppingCheckout() {
     };
 
     dispatch(createNewOrder(orderData)).then((data) => {
-      console.log(data, "sangam");
       if (data?.payload?.success) {
         setIsPaymemntStart(true);
       } else {
@@ -106,9 +100,14 @@ function ShoppingCheckout() {
           setCurrentSelectedAddress={setCurrentSelectedAddress}
         />
         <div className="flex flex-col gap-4">
-          {cartItems && cartItems.items && cartItems.items.length > 0
+          {cartItems &&
+          cartItems.items &&
+          cartItems.items.length > 0
             ? cartItems.items.map((item) => (
-                <UserCartItemsContent cartItem={item} />
+                <UserCartItemsContent
+                  key={item?.productId} // ✅ Added key
+                  cartItem={item}
+                />
               ))
             : null}
           <div className="mt-8 space-y-4">

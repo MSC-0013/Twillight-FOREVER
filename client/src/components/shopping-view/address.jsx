@@ -37,7 +37,6 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
         title: "You can add max 3 addresses",
         variant: "destructive",
       });
-
       return;
     }
 
@@ -53,9 +52,7 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
             dispatch(fetchAllAddresses(user?.id));
             setCurrentEditedId(null);
             setFormData(initialAddressFormData);
-            toast({
-              title: "Address updated successfully",
-            });
+            toast({ title: "Address updated successfully" });
           }
         })
       : dispatch(
@@ -67,9 +64,7 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
           if (data?.payload?.success) {
             dispatch(fetchAllAddresses(user?.id));
             setFormData(initialAddressFormData);
-            toast({
-              title: "Address added successfully",
-            });
+            toast({ title: "Address added successfully" });
           }
         });
   }
@@ -80,9 +75,7 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
     ).then((data) => {
       if (data?.payload?.success) {
         dispatch(fetchAllAddresses(user?.id));
-        toast({
-          title: "Address deleted successfully",
-        });
+        toast({ title: "Address deleted successfully" });
       }
     });
   }
@@ -107,16 +100,15 @@ function Address({ setCurrentSelectedAddress, selectedId }) {
 
   useEffect(() => {
     dispatch(fetchAllAddresses(user?.id));
-  }, [dispatch]);
-
-  console.log(addressList, "addressList");
+  }, [dispatch, user?.id]);
 
   return (
     <Card>
-      <div className="mb-5 p-3 grid grid-cols-1 sm:grid-cols-2  gap-2">
+      <div className="mb-5 p-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
         {addressList && addressList.length > 0
           ? addressList.map((singleAddressItem) => (
               <AddressCard
+                key={singleAddressItem._id} // ✅ Added key
                 selectedId={selectedId}
                 handleDeleteAddress={handleDeleteAddress}
                 addressInfo={singleAddressItem}
