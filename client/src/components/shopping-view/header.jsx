@@ -35,12 +35,12 @@ function MenuItems() {
       getCurrentMenuItem.id !== "home" &&
       getCurrentMenuItem.id !== "products" &&
       getCurrentMenuItem.id !== "search"
-        ? {
-            category: [getCurrentMenuItem.id],
-          }
+        ? { category: [getCurrentMenuItem.id] }
         : null;
 
-    sessionStorage.setItem("filters", JSON.stringify(currentFilter));
+    if (currentFilter) {
+      sessionStorage.setItem("filters", JSON.stringify(currentFilter));
+    }
 
     location.pathname.includes("listing") && currentFilter !== null
       ? setSearchParams(
@@ -76,10 +76,10 @@ function HeaderRightContent() {
   }
 
   useEffect(() => {
-    dispatch(fetchCartItems(user?.id));
-  }, [dispatch]);
-
-  console.log(cartItems, "sangam");
+    if (user?.id) {
+      dispatch(fetchCartItems(user.id));
+    }
+  }, [dispatch, user?.id]);
 
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
@@ -98,11 +98,7 @@ function HeaderRightContent() {
         </Button>
         <UserCartWrapper
           setOpenCartSheet={setOpenCartSheet}
-          cartItems={
-            cartItems && cartItems.items && cartItems.items.length > 0
-              ? cartItems.items
-              : []
-          }
+          cartItems={cartItems?.items?.length > 0 ? cartItems.items : []}
         />
       </Sheet>
 
@@ -110,12 +106,14 @@ function HeaderRightContent() {
         <DropdownMenuTrigger asChild>
           <Avatar className="bg-black">
             <AvatarFallback className="bg-black text-white font-extrabold">
-              {user?.userName[0].toUpperCase()}
+              {user?.userName ? user.userName[0].toUpperCase() : "U"}
             </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent side="right" className="w-56">
-          <DropdownMenuLabel>Logged in as {user?.userName}</DropdownMenuLabel>
+          <DropdownMenuLabel>
+            Logged in as {user?.userName || "Guest"}
+          </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate("/shop/account")}>
             <UserCog className="mr-2 h-4 w-4" />
@@ -142,6 +140,7 @@ function ShoppingHeader() {
           <HousePlug className="h-6 w-6" />
           <span className="font-bold">Ecommerce</span>
         </Link>
+
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="outline" size="icon" className="lg:hidden">
@@ -154,6 +153,7 @@ function ShoppingHeader() {
             <HeaderRightContent />
           </SheetContent>
         </Sheet>
+
         <div className="hidden lg:block">
           <MenuItems />
         </div>

@@ -2,6 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+
+// Routers
 const authRouter = require("./routes/auth/auth-routes");
 const adminProductsRouter = require("./routes/admin/products-routes");
 const adminOrderRouter = require("./routes/admin/order-routes");
@@ -15,17 +17,19 @@ const shopReviewRouter = require("./routes/shop/review-routes");
 
 const commonFeatureRouter = require("./routes/common/feature-routes");
 
-//create a database connection -> u can also
-//create a separate file for this and then import/use that file here
+// MongoDB connection string (hardcoded)
+const MONGO_URI = "mongodb+srv://MSCx0013:MSCx0013%40@msc.k1sij.mongodb.net/twillightforeeverdb?retryWrites=true&w=majority&appName=MSC";
 
+// Connect to MongoDB
 mongoose
-  .connect("db_url")
-  .then(() => console.log("MongoDB connected"))
-  .catch((error) => console.log(error));
+  .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch((error) => console.error("❌ MongoDB connection error:", error));
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = 5000; // you can change if needed
 
+// Middleware
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -43,9 +47,18 @@ app.use(
 
 app.use(cookieParser());
 app.use(express.json());
+
+// Test route
+app.get("/", (req, res) => {
+  res.send("Server is running 🚀");
+});
+
+// API routes
 app.use("/api/auth", authRouter);
 app.use("/api/admin/products", adminProductsRouter);
 app.use("/api/admin/orders", adminOrderRouter);
+app.use("/api/admin-setup", require("./routes/admin-setup"));
+
 
 app.use("/api/shop/products", shopProductsRouter);
 app.use("/api/shop/cart", shopCartRouter);
@@ -56,4 +69,5 @@ app.use("/api/shop/review", shopReviewRouter);
 
 app.use("/api/common/feature", commonFeatureRouter);
 
+// Start server
 app.listen(PORT, () => console.log(`Server is now running on port ${PORT}`));
