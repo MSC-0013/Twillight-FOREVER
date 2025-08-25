@@ -26,7 +26,7 @@ import { useNavigate } from "react-router-dom";
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import { useToast } from "@/components/ui/use-toast";
 import ProductDetailsDialog from "@/components/shopping-view/product-details";
-import { getFeatureImages } from "@/store/common-slice";
+import { landingBanners } from "@/data/products";
 
 const categoriesWithIcon = [
   { id: "men", label: "Men", icon: ShirtIcon },
@@ -50,12 +50,13 @@ function ShoppingHome() {
   const { productList, productDetails } = useSelector(
     (state) => state.shopProducts
   );
-  const { featureImageList } = useSelector((state) => state.commonFeature);
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const banners = landingBanners; // Use landingBanners
 
   function handleNavigateToListingPage(item, section) {
     sessionStorage.removeItem("filters");
@@ -93,48 +94,55 @@ function ShoppingHome() {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % featureImageList.length);
+      setCurrentSlide((prev) => (prev + 1) % banners.length);
     }, 15000);
     return () => clearInterval(timer);
-  }, [featureImageList]);
+  }, [banners]);
 
   useEffect(() => {
     dispatch(fetchAllFilteredProducts({ filterParams: {}, sortParams: "price-lowtohigh" }));
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(getFeatureImages());
   }, [dispatch]);
 
   return (
     <div className="flex flex-col min-h-screen">
       {/* Banner Slider */}
       <div className="relative w-full h-[600px] overflow-hidden">
-        {featureImageList?.map((slide) => (
-          <img
-            key={slide._id || slide.image}
-            src={slide.image}
-            className={`${
-              slide === featureImageList[currentSlide] ? "opacity-100" : "opacity-0"
-            } absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000`}
-          />
+        {banners.map((slide) => (
+          <div
+            key={slide.id}
+            className={`absolute top-0 left-0 w-full h-full transition-opacity duration-1000 ${
+              slide === banners[currentSlide] ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            <img src={slide.image} alt={slide.title} className="w-full h-full object-cover" />
+            <div className="absolute bottom-10 left-10 text-white">
+              <h2 className="text-4xl font-bold">{slide.title}</h2>
+              <p className="text-lg mt-2">{slide.subtitle}</p>
+              <Button
+                onClick={() => navigate(slide.link)}
+                className="mt-4 bg-primary text-white"
+              >
+                {slide.cta}
+              </Button>
+            </div>
+          </div>
         ))}
+
         <Button
           variant="outline"
           size="icon"
           onClick={() =>
-            setCurrentSlide(
-              (prev) => (prev - 1 + featureImageList.length) % featureImageList.length
-            )
+            setCurrentSlide((prev) => (prev - 1 + banners.length) % banners.length)
           }
           className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white/80"
         >
           <ChevronLeftIcon className="w-4 h-4" />
         </Button>
+
         <Button
           variant="outline"
           size="icon"
-          onClick={() => setCurrentSlide((prev) => (prev + 1) % featureImageList.length)}
+          onClick={() => setCurrentSlide((prev) => (prev + 1) % banners.length)}
           className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white/80"
         >
           <ChevronRightIcon className="w-4 h-4" />
@@ -144,7 +152,7 @@ function ShoppingHome() {
       {/* Categories */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">Shop by category</h2>
+          <h2 className="text-3xl font-bold text-center mb-8">Shop by Category</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {categoriesWithIcon.map((category) => (
               <Card
