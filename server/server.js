@@ -1,3 +1,4 @@
+// index.js
 require("dotenv").config(); // Load .env variables
 
 const express = require("express");
@@ -29,13 +30,25 @@ mongoose
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
+// CORS configuration
+const allowedOrigins = [
+  "http://localhost:5173",       // local Vite dev server
+  process.env.CLIENT_URL          // deployed frontend
+];
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true); // allow requests like Postman
+      if (!allowedOrigins.includes(origin)) {
+        const msg = `CORS policy: This origin (${origin}) is not allowed.`;
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
     methods: ["GET", "POST", "DELETE", "PUT"],
     allowedHeaders: ["Content-Type", "Authorization", "Cache-Control", "Expires", "Pragma"],
-    credentials: true,
+    credentials: true, // needed if you use cookies
   })
 );
 
