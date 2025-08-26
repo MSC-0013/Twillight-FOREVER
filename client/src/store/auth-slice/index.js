@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL || "http://localhost:5000";
+// Use Vite environment variable
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:5000";
 
 const initialState = {
   isAuthenticated: false,
@@ -10,6 +11,7 @@ const initialState = {
   error: null,
 };
 
+// Register User
 export const registerUser = createAsyncThunk(
   "/auth/register",
   async (formData, { rejectWithValue }) => {
@@ -26,6 +28,7 @@ export const registerUser = createAsyncThunk(
   }
 );
 
+// Login User
 export const loginUser = createAsyncThunk(
   "/auth/login",
   async (formData, { rejectWithValue }) => {
@@ -42,6 +45,7 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+// Logout User
 export const logoutUser = createAsyncThunk(
   "/auth/logout",
   async (_, { rejectWithValue }) => {
@@ -58,6 +62,7 @@ export const logoutUser = createAsyncThunk(
   }
 );
 
+// Check Authentication
 export const checkAuth = createAsyncThunk(
   "/auth/checkauth",
   async (_, { rejectWithValue }) => {
@@ -86,6 +91,7 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Register
       .addCase(registerUser.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -101,6 +107,8 @@ const authSlice = createSlice({
         state.user = null;
         state.isAuthenticated = false;
       })
+
+      // Login
       .addCase(loginUser.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -116,6 +124,8 @@ const authSlice = createSlice({
         state.user = null;
         state.isAuthenticated = false;
       })
+
+      // Check Auth
       .addCase(checkAuth.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -131,6 +141,8 @@ const authSlice = createSlice({
         state.user = null;
         state.isAuthenticated = false;
       })
+
+      // Logout
       .addCase(logoutUser.fulfilled, (state) => {
         state.isLoading = false;
         state.user = null;

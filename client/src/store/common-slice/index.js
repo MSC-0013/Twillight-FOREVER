@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL || "http://localhost:5000";
+// ✅ Use Vite environment variable instead of process.env
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:5000";
 
 const initialState = {
   isLoading: false,
@@ -41,6 +42,7 @@ const commonSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // Get Feature Images
       .addCase(getFeatureImages.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -54,6 +56,8 @@ const commonSlice = createSlice({
         state.featureImageList = [];
         state.error = action.payload;
       })
+
+      // Add Feature Image
       .addCase(addFeatureImage.pending, (state) => {
         state.isLoading = true;
         state.error = null;
