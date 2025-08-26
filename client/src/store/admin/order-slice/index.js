@@ -1,44 +1,50 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+const SERVER_URL = process.env.REACT_APP_SERVER_URL || "http://localhost:5000";
+
 const initialState = {
+  isLoading: false,
   orderList: [],
   orderDetails: null,
+  error: null,
 };
 
 export const getAllOrdersForAdmin = createAsyncThunk(
   "/order/getAllOrdersForAdmin",
-  async () => {
-    const response = await axios.get(
-      `http://localhost:5000/api/admin/orders/get`
-    );
-
-    return response.data;
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${SERVER_URL}/api/admin/orders/get`);
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || "Failed to fetch orders");
+    }
   }
 );
 
 export const getOrderDetailsForAdmin = createAsyncThunk(
   "/order/getOrderDetailsForAdmin",
-  async (id) => {
-    const response = await axios.get(
-      `http://localhost:5000/api/admin/orders/details/${id}`
-    );
-
-    return response.data;
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${SERVER_URL}/api/admin/orders/details/${id}`);
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || "Failed to fetch order details");
+    }
   }
 );
 
 export const updateOrderStatus = createAsyncThunk(
   "/order/updateOrderStatus",
-  async ({ id, orderStatus }) => {
-    const response = await axios.put(
-      `http://localhost:5000/api/admin/orders/update/${id}`,
-      {
+  async ({ id, orderStatus }, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(`${SERVER_URL}/api/admin/orders/update/${id}`, {
         orderStatus,
-      }
-    );
-
-    return response.data;
+      });
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || "Failed to update order status");
+    }
   }
 );
 
@@ -47,8 +53,6 @@ const adminOrderSlice = createSlice({
   initialState,
   reducers: {
     resetOrderDetails: (state) => {
-      console.log("resetOrderDetails");
-
       state.orderDetails = null;
     },
   },
@@ -56,29 +60,43 @@ const adminOrderSlice = createSlice({
     builder
       .addCase(getAllOrdersForAdmin.pending, (state) => {
         state.isLoading = true;
+        state.error = null;
       })
       .addCase(getAllOrdersForAdmin.fulfilled, (state, action) => {
         state.isLoading = false;
         state.orderList = action.payload.data;
       })
-      .addCase(getAllOrdersForAdmin.rejected, (state) => {
+      .addCase(getAllOrdersForAdmin.rejected, (state, action) => {
         state.isLoading = false;
+        state.error = action.payload;
         state.orderList = [];
       })
       .addCase(getOrderDetailsForAdmin.pending, (state) => {
         state.isLoading = true;
+        state.error = null;
       })
       .addCase(getOrderDetailsForAdmin.fulfilled, (state, action) => {
         state.isLoading = false;
         state.orderDetails = action.payload.data;
       })
-      .addCase(getOrderDetailsForAdmin.rejected, (state) => {
+      .addCase(getOrderDetailsForAdmin.rejected, (state, action) => {
         state.isLoading = false;
+        state.error = action.payload;
         state.orderDetails = null;
+      })
+      .addCase(updateOrderStatus.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(updateOrderStatus.fulfilled, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(updateOrderStatus.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
       });
   },
 });
 
 export const { resetOrderDetails } = adminOrderSlice.actions;
-
 export default adminOrderSlice.reducer;

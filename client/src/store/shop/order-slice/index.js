@@ -1,6 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+const BASE_URL = import.meta.env.VITE_SERVER_URL;
+
 const initialState = {
   isLoading: false,
   orderId: null,
@@ -11,12 +13,7 @@ const initialState = {
 export const createNewOrder = createAsyncThunk(
   "/order/createNewOrder",
   async (orderData) => {
-    // Direct payment flow: backend marks it as paid
-    const response = await axios.post(
-      "http://localhost:5000/api/shop/order/create",
-      orderData
-    );
-
+    const response = await axios.post(`${BASE_URL}/api/shop/order/create`, orderData);
     return response.data;
   }
 );
@@ -24,9 +21,7 @@ export const createNewOrder = createAsyncThunk(
 export const getAllOrdersByUserId = createAsyncThunk(
   "/order/getAllOrdersByUserId",
   async (userId) => {
-    const response = await axios.get(
-      `http://localhost:5000/api/shop/order/list/${userId}`
-    );
+    const response = await axios.get(`${BASE_URL}/api/shop/order/list/${userId}`);
     return response.data;
   }
 );
@@ -34,9 +29,7 @@ export const getAllOrdersByUserId = createAsyncThunk(
 export const getOrderDetails = createAsyncThunk(
   "/order/getOrderDetails",
   async (id) => {
-    const response = await axios.get(
-      `http://localhost:5000/api/shop/order/details/${id}`
-    );
+    const response = await axios.get(`${BASE_URL}/api/shop/order/details/${id}`);
     return response.data;
   }
 );
@@ -45,49 +38,29 @@ const shoppingOrderSlice = createSlice({
   name: "shoppingOrderSlice",
   initialState,
   reducers: {
-    resetOrderDetails: (state) => {
-      state.orderDetails = null;
-    },
+    resetOrderDetails: (state) => { state.orderDetails = null; },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(createNewOrder.pending, (state) => {
-        state.isLoading = true;
-      })
+      .addCase(createNewOrder.pending, (state) => { state.isLoading = true; })
       .addCase(createNewOrder.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.orderId = action.payload._id; // backend returns saved order ID
-        sessionStorage.setItem(
-          "currentOrderId",
-          JSON.stringify(action.payload._id)
-        );
+        state.orderId = action.payload._id;
+        sessionStorage.setItem("currentOrderId", JSON.stringify(action.payload._id));
       })
-      .addCase(createNewOrder.rejected, (state) => {
-        state.isLoading = false;
-        state.orderId = null;
-      })
-      .addCase(getAllOrdersByUserId.pending, (state) => {
-        state.isLoading = true;
-      })
+      .addCase(createNewOrder.rejected, (state) => { state.isLoading = false; state.orderId = null; })
+      .addCase(getAllOrdersByUserId.pending, (state) => { state.isLoading = true; })
       .addCase(getAllOrdersByUserId.fulfilled, (state, action) => {
         state.isLoading = false;
         state.orderList = action.payload.data;
       })
-      .addCase(getAllOrdersByUserId.rejected, (state) => {
-        state.isLoading = false;
-        state.orderList = [];
-      })
-      .addCase(getOrderDetails.pending, (state) => {
-        state.isLoading = true;
-      })
+      .addCase(getAllOrdersByUserId.rejected, (state) => { state.isLoading = false; state.orderList = []; })
+      .addCase(getOrderDetails.pending, (state) => { state.isLoading = true; })
       .addCase(getOrderDetails.fulfilled, (state, action) => {
         state.isLoading = false;
         state.orderDetails = action.payload.data;
       })
-      .addCase(getOrderDetails.rejected, (state) => {
-        state.isLoading = false;
-        state.orderDetails = null;
-      });
+      .addCase(getOrderDetails.rejected, (state) => { state.isLoading = false; state.orderDetails = null; });
   },
 });
 
