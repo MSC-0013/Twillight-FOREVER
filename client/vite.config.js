@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react";
 import path from "path";
 
 export default defineConfig({
-  base: "./", // relative paths so JS/CSS are loaded correctly
+  base: "./", // ensures relative paths for JS/CSS/images
   plugins: [react()],
   resolve: {
     alias: {
@@ -11,7 +11,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: "dist",
+    outDir: "dist",   // Vercel will serve this folder
     assetsDir: "assets",
   },
 });

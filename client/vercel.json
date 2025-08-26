@@ -4,14 +4,18 @@
     {
       "src": "package.json",
       "use": "@vercel/static-build",
-      "config": { "distDir": "dist" }
+      "config": {
+        "distDir": "dist"
+      }
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
       "dest": "/index.html",
-      "headers": { "cache-control": "max-age=0" }
+      "headers": {
+        "cache-control": "max-age=0"
+      }
     }
   ]
 }
