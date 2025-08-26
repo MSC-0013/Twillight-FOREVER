@@ -25,7 +25,9 @@ function AdminOrdersView() {
   const dispatch = useDispatch();
 
   const { user } = useSelector((state) => state.auth);
-  const { orderList, orderDetails } = useSelector((state) => state.shopOrder);
+  const { orderList = [], orderDetails } = useSelector(
+    (state) => state.shopOrder
+  );
 
   useEffect(() => {
     if (user?.id) {
@@ -55,9 +57,15 @@ function AdminOrdersView() {
     }
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    const dateObj = new Date(dateString);
+    return isNaN(dateObj) ? "N/A" : dateObj.toLocaleDateString();
+  };
+
   if (!orderList) {
     return (
-      <Card>
+      <Card className="shadow-lg border border-gray-200">
         <CardHeader>
           <CardTitle>Order History</CardTitle>
         </CardHeader>
@@ -67,12 +75,12 @@ function AdminOrdersView() {
   }
 
   return (
-    <Card>
+    <Card className="shadow-lg border border-gray-200">
       <CardHeader>
         <CardTitle>Order History</CardTitle>
       </CardHeader>
       <CardContent>
-        <Table>
+        <Table className="border">
           <TableHeader>
             <TableRow>
               <TableHead>Order ID</TableHead>
@@ -89,24 +97,21 @@ function AdminOrdersView() {
               orderList.map((orderItem) => {
                 if (!orderItem) return null;
 
-                const orderDate = orderItem?.orderDate
-                  ? orderItem.orderDate.split("T")[0]
-                  : "N/A";
-
                 return (
-                  <TableRow key={orderItem._id}>
-                    <TableCell>{orderItem._id || "N/A"}</TableCell>
-                    <TableCell>{orderDate}</TableCell>
+                  <TableRow key={orderItem._id} className="hover:bg-gray-50">
+                    <TableCell className="font-mono text-sm">
+                      {orderItem._id ?? "N/A"}
+                    </TableCell>
+                    <TableCell>{formatDate(orderItem.orderDate)}</TableCell>
                     <TableCell>
                       <Badge
                         className={`py-1 px-3 ${getStatusBadgeColor(
                           orderItem?.orderStatus
                         )}`}
                       >
-                        {orderItem?.orderStatus || "Pending"}
+                        {orderItem?.orderStatus ?? "Pending"}
                       </Badge>
                     </TableCell>
-                    {/* Changed from $ to ₹ */}
                     <TableCell>₹{orderItem?.totalAmount ?? 0}</TableCell>
                     <TableCell>
                       <Dialog
@@ -121,12 +126,19 @@ function AdminOrdersView() {
                         }}
                       >
                         <Button
-                          onClick={() => handleFetchOrderDetails(orderItem._id)}
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            handleFetchOrderDetails(orderItem._id)
+                          }
                         >
                           View Details
                         </Button>
-                        {selectedOrderId === orderItem._id && (
-                          <ShoppingOrderDetailsView orderDetails={orderDetails} />
+
+                        {selectedOrderId === orderItem._id && orderDetails && (
+                          <ShoppingOrderDetailsView
+                            orderDetails={orderDetails}
+                          />
                         )}
                       </Dialog>
                     </TableCell>
@@ -135,7 +147,10 @@ function AdminOrdersView() {
               })
             ) : (
               <TableRow>
-                <TableCell colSpan={5} className="text-center">
+                <TableCell
+                  colSpan={5}
+                  className="text-center py-6 text-gray-500"
+                >
                   No orders found.
                 </TableCell>
               </TableRow>

@@ -170,12 +170,13 @@ export const filterOptions = {
     { id: "footwear", label: "Footwear" },
   ],
   brand: [
-    { id: "nike", label: "Nike" },
-    { id: "adidas", label: "Adidas" },
-    { id: "puma", label: "Puma" },
+    { id: "nike", label: "Clothes" },
+    { id: "adidas", label: "Shoes" },
+    { id: "puma", label: "Sunglasses" },
     { id: "levi", label: "Levi's" },
-    { id: "zara", label: "Zara" },
-    { id: "h&m", label: "H&M" },
+    
+    { id: "h&m", label: "Electronics" },
+    { id: "zara", label: "Other" },
   ],
 };
 

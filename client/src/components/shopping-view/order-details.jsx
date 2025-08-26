@@ -18,21 +18,30 @@ function ShoppingOrderDetailsView({ orderDetails }) {
     }
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    const dateObj = new Date(dateString);
+    return isNaN(dateObj) ? "N/A" : dateObj.toLocaleDateString();
+  };
+
   return (
     <DialogContent className="sm:max-w-[600px] p-6">
       <div className="grid gap-6">
         {/* Basic Order Info */}
         <div className="grid gap-3">
           {[
-            { label: "Order ID", value: orderDetails?._id },
-            { label: "Order Date", value: orderDetails?.orderDate?.split("T")[0] },
-            { label: "Order Price", value: `₹${orderDetails?.totalAmount}` }, // Changed to Rupees
-            { label: "Payment Method", value: orderDetails?.paymentMethod },
-            { label: "Payment Status", value: orderDetails?.paymentStatus },
+            { label: "Order ID", value: orderDetails?._id ?? "-" },
+            { label: "Order Date", value: formatDate(orderDetails?.orderDate) },
+            {
+              label: "Order Price",
+              value: `₹${orderDetails?.totalAmount ?? 0}`,
+            },
+            { label: "Payment Method", value: orderDetails?.paymentMethod ?? "-" },
+            { label: "Payment Status", value: orderDetails?.paymentStatus ?? "-" },
           ].map((item, index) => (
             <div key={index} className="flex items-center justify-between">
               <p className="font-medium">{item.label}</p>
-              <Label>{item.value || "-"}</Label>
+              <Label>{item.value}</Label>
             </div>
           ))}
 
@@ -40,8 +49,12 @@ function ShoppingOrderDetailsView({ orderDetails }) {
           <div className="flex items-center justify-between">
             <p className="font-medium">Order Status</p>
             <Label>
-              <Badge className={`py-1 px-3 ${getStatusBadgeColor(orderDetails?.orderStatus)}`}>
-                {orderDetails?.orderStatus || "-"}
+              <Badge
+                className={`py-1 px-3 ${getStatusBadgeColor(
+                  orderDetails?.orderStatus
+                )}`}
+              >
+                {orderDetails?.orderStatus ?? "-"}
               </Badge>
             </Label>
           </div>
@@ -58,7 +71,7 @@ function ShoppingOrderDetailsView({ orderDetails }) {
                 <li key={idx} className="flex justify-between border rounded p-2">
                   <span className="font-semibold">{item.title}</span>
                   <span>Qty: {item.quantity}</span>
-                  <span>₹{item.price}</span> {/* Changed to Rupees */}
+                  <span>₹{item.price}</span>
                 </li>
               ))
             ) : (
@@ -71,12 +84,12 @@ function ShoppingOrderDetailsView({ orderDetails }) {
         <div className="grid gap-2">
           <div className="font-medium">Shipping Info</div>
           <div className="grid gap-0.5 text-muted-foreground">
-            <span>{user?.userName || "-"}</span>
-            <span>{orderDetails?.addressInfo?.address || "-"}</span>
-            <span>{orderDetails?.addressInfo?.city || "-"}</span>
-            <span>{orderDetails?.addressInfo?.pincode || "-"}</span>
-            <span>{orderDetails?.addressInfo?.phone || "-"}</span>
-            <span>{orderDetails?.addressInfo?.notes || "-"}</span>
+            <span>{user?.userName ?? "-"}</span>
+            <span>{orderDetails?.addressInfo?.address ?? "-"}</span>
+            <span>{orderDetails?.addressInfo?.city ?? "-"}</span>
+            <span>{orderDetails?.addressInfo?.pincode ?? "-"}</span>
+            <span>{orderDetails?.addressInfo?.phone ?? "-"}</span>
+            <span>{orderDetails?.addressInfo?.notes ?? "-"}</span>
           </div>
         </div>
       </div>
