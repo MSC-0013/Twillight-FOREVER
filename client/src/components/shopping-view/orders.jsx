@@ -25,9 +25,7 @@ function AdminOrdersView() {
   const dispatch = useDispatch();
 
   const { user } = useSelector((state) => state.auth);
-  const { orderList, orderDetails } = useSelector(
-    (state) => state.shopOrder
-  );
+  const { orderList, orderDetails } = useSelector((state) => state.shopOrder);
 
   useEffect(() => {
     if (user?.id) {
@@ -36,7 +34,7 @@ function AdminOrdersView() {
   }, [dispatch, user?.id]);
 
   useEffect(() => {
-    if (orderDetails && orderDetails._id === selectedOrderId) {
+    if (orderDetails?._id === selectedOrderId) {
       setOpenDetailsDialog(true);
     }
   }, [orderDetails, selectedOrderId]);
@@ -44,6 +42,17 @@ function AdminOrdersView() {
   const handleFetchOrderDetails = (orderId) => {
     setSelectedOrderId(orderId);
     dispatch(getOrderDetails(orderId));
+  };
+
+  const getStatusBadgeColor = (status) => {
+    switch (status) {
+      case "confirmed":
+        return "bg-green-500";
+      case "rejected":
+        return "bg-red-600";
+      default:
+        return "bg-gray-800";
+    }
   };
 
   if (!orderList) {
@@ -78,38 +87,32 @@ function AdminOrdersView() {
           <TableBody>
             {orderList.length > 0 ? (
               orderList.map((orderItem) => {
-                if (!orderItem) return null; // skip undefined orders
+                if (!orderItem) return null;
 
-                const orderDate =
-                  typeof orderItem.orderDate === "string"
-                    ? orderItem.orderDate.split("T")[0]
-                    : "N/A";
+                const orderDate = orderItem?.orderDate
+                  ? orderItem.orderDate.split("T")[0]
+                  : "N/A";
 
                 return (
-                  <TableRow key={orderItem._id || Math.random()}>
+                  <TableRow key={orderItem._id}>
                     <TableCell>{orderItem._id || "N/A"}</TableCell>
                     <TableCell>{orderDate}</TableCell>
                     <TableCell>
                       <Badge
-                        className={`py-1 px-3 ${
-                          orderItem?.orderStatus === "confirmed"
-                            ? "bg-green-500"
-                            : orderItem?.orderStatus === "rejected"
-                            ? "bg-red-600"
-                            : "bg-black"
-                        }`}
+                        className={`py-1 px-3 ${getStatusBadgeColor(
+                          orderItem?.orderStatus
+                        )}`}
                       >
                         {orderItem?.orderStatus || "Pending"}
                       </Badge>
                     </TableCell>
-                    <TableCell>
-                      ${orderItem?.totalAmount ?? 0}
-                    </TableCell>
+                    {/* Changed from $ to ₹ */}
+                    <TableCell>₹{orderItem?.totalAmount ?? 0}</TableCell>
                     <TableCell>
                       <Dialog
                         open={
                           openDetailsDialog &&
-                          selectedOrderId === orderItem?._id
+                          selectedOrderId === orderItem._id
                         }
                         onOpenChange={() => {
                           setOpenDetailsDialog(false);
@@ -118,13 +121,13 @@ function AdminOrdersView() {
                         }}
                       >
                         <Button
-                          onClick={() =>
-                            handleFetchOrderDetails(orderItem?._id)
-                          }
+                          onClick={() => handleFetchOrderDetails(orderItem._id)}
                         >
                           View Details
                         </Button>
-                        <ShoppingOrderDetailsView orderDetails={orderDetails} />
+                        {selectedOrderId === orderItem._id && (
+                          <ShoppingOrderDetailsView orderDetails={orderDetails} />
+                        )}
                       </Dialog>
                     </TableCell>
                   </TableRow>

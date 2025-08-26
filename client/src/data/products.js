@@ -1,15 +1,36 @@
-
-export const categories = [
-  { id: 'electronics', name: 'Electronics', icon: '📱' },
-  { id: 'fashion', name: 'Fashion', icon: '👕' },
-  { id: 'appliances', name: 'Appliances', icon: '🏠' },
-  { id: 'shoes', name: 'Shoes', icon: '👟' },
-  { id: 'books', name: 'Books', icon: '📚' },
-  { id: 'toys', name: 'Toys & Games', icon: '🎮' },
+export const categories = [{
+    id: 'electronics',
+    name: 'Electronics',
+    icon: '📱'
+  },
+  {
+    id: 'fashion',
+    name: 'Fashion',
+    icon: '👕'
+  },
+  {
+    id: 'appliances',
+    name: 'Appliances',
+    icon: '🏠'
+  },
+  {
+    id: 'shoes',
+    name: 'Shoes',
+    icon: '👟'
+  },
+  {
+    id: 'books',
+    name: 'Books',
+    icon: '📚'
+  },
+  {
+    id: 'toys',
+    name: 'Toys & Games',
+    icon: '🎮'
+  },
 ];
 
-export const banners = [
-  {
+export const banners = [{
     id: '1',
     title: 'Tech Revolution 2024',
     subtitle: 'Discover cutting-edge electronics at unbeatable prices',
@@ -50,52 +71,50 @@ export const banners = [
     cta: 'Read More'
   }
 ];
-
-export const landingBanners = [
-  {
+export const landingBanners = [{
     id: '1',
     title: 'FOREVER MEGA SALE',
     subtitle: 'Up to 80% off on premium products - Limited time offer!',
     image: 'https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?w=1200&h=600&fit=crop',
-    link: '/products',
-    cta: 'Shop Now'
+    link: '/shop/listing',
+    cta: 'Shop Now',
   },
   {
     id: '2',
     title: 'Tech Paradise',
     subtitle: 'Latest gadgets and electronics at unbeatable prices',
     image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&h=600&fit=crop',
-    link: '/products?category=electronics',
-    cta: 'Explore Tech'
+    link: '/shop/listing',
+    cta: 'Explore Tech',
   },
   {
     id: '3',
     title: 'Fashion Week Special',
     subtitle: 'Runway-inspired looks for every occasion',
     image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&h=600&fit=crop',
-    link: '/products?category=fashion',
-    cta: 'Style Now'
+    link: '/shop/listing',
+    cta: 'Style Now',
   },
   {
     id: '4',
     title: 'Smart Living',
     subtitle: 'Transform your space with intelligent appliances',
     image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1200&h=600&fit=crop',
-    link: '/products?category=appliances',
-    cta: 'Upgrade Home'
+    link: '/shop/listing',
+    cta: 'Upgrade Home',
   },
   {
     id: '5',
     title: 'Step Forward',
     subtitle: 'Premium footwear collection for modern lifestyle',
     image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=1200&h=600&fit=crop',
-    link: '/products?category=shoes',
-    cta: 'Shop Shoes'
-  }
+    link: '/shop/listing',
+    cta: 'Shop Shoes',
+  },
 ];
 
-export const products = [
-  {
+
+export const products = [{
     id: '1',
     name: 'iPhone 15 Pro Max 256GB Titanium',
     price: 134900,

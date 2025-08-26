@@ -14,7 +14,7 @@ import {
   Images,
   Heater,
 } from "lucide-react";
-import { SiGoogle , SiApple, SiSony, SiNintendo } from "react-icons/si";
+import { SiGoogle, SiApple, SiSony, SiNintendo } from "react-icons/si";
 import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -46,10 +46,9 @@ const brandsWithIcon = [
   { id: "h&m", label: "H&M", icon: Heater },
 
   { id: "apple", label: "Apple", icon: SiApple },
-{ id: "sony", label: "Sony", icon: SiSony },
-{ id: "nintendo", label: "Nintendo", icon: SiNintendo },
-{ id: "google", label: "Google", icon: SiGoogle },
-
+  { id: "sony", label: "Sony", icon: SiSony },
+  { id: "nintendo", label: "Nintendo", icon: SiNintendo },
+  { id: "google", label: "Google", icon: SiGoogle },
 
   { id: "timeclassic", label: "TimeClassic", icon: WatchIcon },
   { id: "stylecraft", label: "StyleCraft", icon: Shirt },
@@ -153,7 +152,9 @@ function ShoppingHome() {
           variant="outline"
           size="icon"
           onClick={() =>
-            setCurrentSlide((prev) => (prev - 1 + banners.length) % banners.length)
+            setCurrentSlide(
+              (prev) => (prev - 1 + banners.length) % banners.length
+            )
           }
           className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white/80"
         >
@@ -169,25 +170,26 @@ function ShoppingHome() {
           <ChevronRightIcon className="w-4 h-4" />
         </Button>
       </div>
-
       {/* Categories */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-8">
             Shop by Category
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
             {categoriesWithIcon.map((category) => (
               <Card
                 key={category.id}
                 onClick={() =>
                   handleNavigateToListingPage(category, "category")
                 }
-                className="cursor-pointer hover:shadow-lg transition-shadow"
+                className="cursor-pointer bg-gradient-to-br from-indigo-100 via-purple-100 to-indigo-200 hover:shadow-xl transition-all rounded-2xl"
               >
                 <CardContent className="flex flex-col items-center justify-center p-6">
-                  <category.icon className="w-12 h-12 mb-4 text-primary" />
-                  <span className="font-bold">{category.label}</span>
+                  <category.icon className="w-12 h-12 mb-4 text-indigo-600" />
+                  <span className="font-semibold text-gray-800">
+                    {category.label}
+                  </span>
                 </CardContent>
               </Card>
             ))}
@@ -196,19 +198,21 @@ function ShoppingHome() {
       </section>
 
       {/* Brands */}
-      <section className="py-12 bg-gray-50">
+      <section className="py-12 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-8">Shop by Brand</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
             {brandsWithIcon.map((brand) => (
               <Card
                 key={brand.id}
                 onClick={() => handleNavigateToListingPage(brand, "brand")}
-                className="cursor-pointer hover:shadow-lg transition-shadow"
+                className="cursor-pointer bg-gradient-to-br from-pink-100 via-yellow-100 to-pink-200 hover:shadow-xl transition-all rounded-2xl"
               >
                 <CardContent className="flex flex-col items-center justify-center p-6">
-                  <brand.icon className="w-12 h-12 mb-4 text-primary" />
-                  <span className="font-bold">{brand.label}</span>
+                  <brand.icon className="w-12 h-12 mb-4 text-pink-600" />
+                  <span className="font-semibold text-gray-800">
+                    {brand.label}
+                  </span>
                 </CardContent>
               </Card>
             ))}
@@ -220,16 +224,18 @@ function ShoppingHome() {
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-8">Shop by Books</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
             {booksWithIcon.map((book) => (
               <Card
                 key={book.id}
                 onClick={() => handleNavigateToListingPage(book, "brand")}
-                className="cursor-pointer hover:shadow-lg transition-shadow"
+                className="cursor-pointer bg-gradient-to-br from-green-100 via-blue-100 to-green-200 hover:shadow-xl transition-all rounded-2xl"
               >
                 <CardContent className="flex flex-col items-center justify-center p-6">
-                  <book.icon className="w-12 h-12 mb-4 text-primary" />
-                  <span className="font-bold">{book.label}</span>
+                  <book.icon className="w-12 h-12 mb-4 text-green-600" />
+                  <span className="font-semibold text-gray-800">
+                    {book.label}
+                  </span>
                 </CardContent>
               </Card>
             ))}
@@ -240,7 +246,9 @@ function ShoppingHome() {
       {/* Feature Products */}
       <section className="py-12">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">Feature Products</h2>
+          <h2 className="text-3xl font-bold text-center mb-8">
+            Feature Products
+          </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {productList?.map((product) => (
               <ShoppingProductTile

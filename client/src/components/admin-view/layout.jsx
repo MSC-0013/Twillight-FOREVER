@@ -8,12 +8,15 @@ function AdminLayout() {
 
   return (
     <div className="flex min-h-screen w-full">
-      {/* admin sidebar */}
-      <AdminSideBar open={openSidebar} setOpen={setOpenSidebar} />
-      <div className="flex flex-1 flex-col">
-        {/* admin header */}
+      {/* Sidebar - fixed & scrollable */}
+      <div className="fixed left-0 top-0 h-screen w-64 overflow-y-auto bg-white shadow-md">
+        <AdminSideBar open={openSidebar} setOpen={setOpenSidebar} />
+      </div>
+
+      {/* Main Content (shifted right by sidebar width) */}
+      <div className="flex flex-1 flex-col ml-64">
         <AdminHeader setOpen={setOpenSidebar} />
-        <main className="flex-1 flex-col flex bg-muted/40 p-4 md:p-6">
+        <main className="flex-1 flex-col flex bg-muted/40 p-4 md:p-6 overflow-y-auto">
           <Outlet />
         </main>
       </div>
