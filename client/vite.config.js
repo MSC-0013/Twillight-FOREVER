@@ -11,6 +11,6 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: "dist", // make sure this is where Vercel looks
+    outDir: "dist", // Vercel will use this folder
   },
 });

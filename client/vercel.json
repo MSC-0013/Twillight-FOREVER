@@ -1,12 +1,10 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "version": 2,
-  "rootDirectory": "client",
+  "version": 3,
   "builds": [
     {
-      "src": "vite.config.js",
+      "src": "client/package.json",
       "use": "@vercel/static-build",
-      "config": { "distDir": "dist" }
+      "config": { "distDir": "client/dist" }
     }
   ],
   "routes": [
