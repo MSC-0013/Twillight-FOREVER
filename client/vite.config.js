@@ -2,16 +2,15 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  base: "/", // ensures correct paths for assets in production
+  base: "/", // important for SPA routing
   plugins: [react()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "src"), // keeps @ pointing to client/src
+      "@": path.resolve(__dirname, "src"),
     },
   },
   build: {
-    outDir: "dist", // ensures build output goes to client/dist
+    outDir: "dist", // make sure this is where Vercel looks
   },
 });
