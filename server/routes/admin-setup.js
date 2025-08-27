@@ -6,7 +6,7 @@ router.post("/create-admin", async (req, res) => {
   try {
     const adminData = {
       userName: "admin",
-      email: "admin@example.com",
+      email: "admin@gmail.com",
       password: "$2b$10$JwguGLEmsPGOdfp7jO9kXeVvF6x0eobxDeZHO4dtRf7WvGjiHsJ4e",
       role: "admin",
     };

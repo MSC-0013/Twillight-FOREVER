@@ -11,15 +11,22 @@ const getAllOrdersOfAllUsers = async (req, res) => {
       });
     }
 
+    // Format orders: ensure date fields are always strings
+    const formattedOrders = orders.map(order => ({
+      ...order.toObject(),
+      orderDate: order.orderDate ? order.orderDate.toISOString() : null,
+      orderUpdateDate: order.orderUpdateDate ? order.orderUpdateDate.toISOString() : null,
+    }));
+
     res.status(200).json({
       success: true,
-      data: orders,
+      data: formattedOrders,
     });
   } catch (e) {
     console.log(e);
     res.status(500).json({
       success: false,
-      message: "Some error occured!",
+      message: "Some error occurred!",
     });
   }
 };
@@ -27,7 +34,6 @@ const getAllOrdersOfAllUsers = async (req, res) => {
 const getOrderDetailsForAdmin = async (req, res) => {
   try {
     const { id } = req.params;
-
     const order = await Order.findById(id);
 
     if (!order) {
@@ -37,15 +43,22 @@ const getOrderDetailsForAdmin = async (req, res) => {
       });
     }
 
+    // Format single order
+    const formattedOrder = {
+      ...order.toObject(),
+      orderDate: order.orderDate ? order.orderDate.toISOString() : null,
+      orderUpdateDate: order.orderUpdateDate ? order.orderUpdateDate.toISOString() : null,
+    };
+
     res.status(200).json({
       success: true,
-      data: order,
+      data: formattedOrder,
     });
   } catch (e) {
     console.log(e);
     res.status(500).json({
       success: false,
-      message: "Some error occured!",
+      message: "Some error occurred!",
     });
   }
 };
@@ -64,17 +77,17 @@ const updateOrderStatus = async (req, res) => {
       });
     }
 
-    await Order.findByIdAndUpdate(id, { orderStatus });
+    await Order.findByIdAndUpdate(id, { orderStatus, orderUpdateDate: new Date() });
 
     res.status(200).json({
       success: true,
-      message: "Order status is updated successfully!",
+      message: "Order status updated successfully!",
     });
   } catch (e) {
     console.log(e);
     res.status(500).json({
       success: false,
-      message: "Some error occured!",
+      message: "Some error occurred!",
     });
   }
 };

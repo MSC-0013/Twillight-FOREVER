@@ -10,8 +10,6 @@ const createOrder = async (req, res) => {
       cartItems,
       addressInfo,
       totalAmount,
-      orderDate,
-      orderUpdateDate,
       cartId,
     } = req.body;
 
@@ -24,8 +22,8 @@ const createOrder = async (req, res) => {
       paymentMethod: "direct",       // no PayPal
       paymentStatus: "success",      // payment success
       totalAmount,
-      orderDate,
-      orderUpdateDate,
+      orderDate: new Date(),
+      orderUpdateDate: new Date(),
     });
 
     await newlyCreatedOrder.save();
@@ -63,13 +61,22 @@ const getAllOrdersByUser = async (req, res) => {
   try {
     const { userId } = req.params;
     const orders = await Order.find({ userId });
+
     if (!orders.length) {
       return res.status(404).json({
         success: false,
         message: "No orders found!",
       });
     }
-    res.status(200).json({ success: true, data: orders });
+
+    // Format orders
+    const formattedOrders = orders.map(order => ({
+      ...order.toObject(),
+      orderDate: order.orderDate ? order.orderDate.toISOString() : null,
+      orderUpdateDate: order.orderUpdateDate ? order.orderUpdateDate.toISOString() : null,
+    }));
+
+    res.status(200).json({ success: true, data: formattedOrders });
   } catch (e) {
     console.log(e);
     res.status(500).json({ success: false, message: "Some error occurred!" });
@@ -81,10 +88,18 @@ const getOrderDetails = async (req, res) => {
   try {
     const { id } = req.params;
     const order = await Order.findById(id);
+
     if (!order) {
       return res.status(404).json({ success: false, message: "Order not found!" });
     }
-    res.status(200).json({ success: true, data: order });
+
+    const formattedOrder = {
+      ...order.toObject(),
+      orderDate: order.orderDate ? order.orderDate.toISOString() : null,
+      orderUpdateDate: order.orderUpdateDate ? order.orderUpdateDate.toISOString() : null,
+    };
+
+    res.status(200).json({ success: true, data: formattedOrder });
   } catch (e) {
     console.log(e);
     res.status(500).json({ success: false, message: "Some error occurred!" });
