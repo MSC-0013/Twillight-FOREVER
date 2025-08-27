@@ -60,9 +60,17 @@ function AdminOrdersView() {
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    const dateObj = new Date(dateString);
-    return isNaN(dateObj) ? "N/A" : dateObj.toLocaleDateString();
+    try {
+      if (!dateString || typeof dateString !== "string") return "N/A";
+      // Defensive: only call includes/split if dateString is a string
+      if (typeof dateString === "string" && dateString.includes("T")) {
+        return dateString.split("T")[0];
+      }
+      const dateObj = new Date(dateString);
+      return isNaN(dateObj) ? "N/A" : dateObj.toLocaleDateString();
+    } catch (e) {
+      return "N/A";
+    }
   };
 
   if (!orderList) {
@@ -99,11 +107,20 @@ function AdminOrdersView() {
               orderList.map((orderItem) => {
                 if (!orderItem) return null;
 
-                // Defensive: ensure all fields are defined
+                // Defensive: ensure all fields are defined and of correct type
                 const orderId = orderItem._id ?? "N/A";
-                const orderDate = orderItem.orderDate ?? "";
-                const orderStatus = orderItem.orderStatus ?? "Pending";
-                const totalAmount = orderItem.totalAmount ?? 0;
+                const orderDate =
+                  typeof orderItem.orderDate === "string"
+                    ? orderItem.orderDate
+                    : "";
+                const orderStatus =
+                  typeof orderItem.orderStatus === "string"
+                    ? orderItem.orderStatus
+                    : "Pending";
+                const totalAmount =
+                  typeof orderItem.totalAmount === "number"
+                    ? orderItem.totalAmount
+                    : 0;
 
                 return (
                   <TableRow key={orderId} className="hover:bg-gray-50">
@@ -175,3 +192,4 @@ function AdminOrdersView() {
 }
 
 export default AdminOrdersView;
+   
