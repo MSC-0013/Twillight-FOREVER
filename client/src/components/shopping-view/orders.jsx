@@ -36,7 +36,7 @@ function AdminOrdersView() {
     }
   }, [dispatch, user?.id]);
 
-  // Open dialog only when matching order details are available
+  // Open dialog when matching details are available
   useEffect(() => {
     if (orderDetails?._id && orderDetails._id === selectedOrderId) {
       setOpenDetailsDialog(true);
@@ -49,9 +49,15 @@ function AdminOrdersView() {
   };
 
   const getStatusBadgeColor = (status) => {
-    switch (status) {
+    switch (status?.toLowerCase()) {
       case "confirmed":
         return "bg-green-500";
+      case "processing":
+        return "bg-blue-500";
+      case "shipped":
+        return "bg-yellow-500";
+      case "delivered":
+        return "bg-emerald-600";
       case "rejected":
         return "bg-red-600";
       default:
@@ -61,16 +67,13 @@ function AdminOrdersView() {
 
   const formatDate = (dateString) => {
     try {
-      // Ensure dateString is a string and has split before using it
-      if (!dateString || typeof dateString !== "string" || typeof dateString.split !== "function") {
-        return "N/A";
-      }
-      if (dateString.includes("T")) {
+      if (!dateString) return "N/A";
+      if (typeof dateString === "string" && dateString.includes("T")) {
         return dateString.split("T")[0];
       }
-      const dateObj = new Date(dateString);
-      return isNaN(dateObj) ? "N/A" : dateObj.toLocaleDateString();
-    } catch (e) {
+      const d = new Date(dateString);
+      return isNaN(d) ? "N/A" : d.toLocaleDateString();
+    } catch {
       return "N/A";
     }
   };
@@ -97,8 +100,8 @@ function AdminOrdersView() {
             <TableRow>
               <TableHead>Order ID</TableHead>
               <TableHead>Order Date</TableHead>
-              <TableHead>Order Status</TableHead>
-              <TableHead>Order Price</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Total</TableHead>
               <TableHead>
                 <span className="sr-only">Details</span>
               </TableHead>
@@ -109,16 +112,17 @@ function AdminOrdersView() {
               orderList.map((orderItem) => {
                 if (!orderItem) return null;
 
-                // Defensive: ensure all fields are defined and of correct type
+                // Normalize old + new schema
                 const orderId = orderItem._id ?? "N/A";
                 const orderDate =
-                  typeof orderItem.orderDate === "string"
-                    ? orderItem.orderDate
-                    : "";
+                  orderItem.orderDate ||
+                  orderItem.createdAt ||
+                  orderItem.updatedAt ||
+                  "";
                 const orderStatus =
-                  typeof orderItem.orderStatus === "string"
-                    ? orderItem.orderStatus
-                    : "Pending";
+                  orderItem.orderStatus ||
+                  orderItem.status ||
+                  "Pending";
                 const totalAmount =
                   typeof orderItem.totalAmount === "number"
                     ? orderItem.totalAmount
@@ -132,7 +136,9 @@ function AdminOrdersView() {
                     <TableCell>{formatDate(orderDate)}</TableCell>
                     <TableCell>
                       <Badge
-                        className={`py-1 px-3 ${getStatusBadgeColor(orderStatus)}`}
+                        className={`py-1 px-3 ${getStatusBadgeColor(
+                          orderStatus
+                        )}`}
                       >
                         {orderStatus}
                       </Badge>
@@ -141,8 +147,7 @@ function AdminOrdersView() {
                     <TableCell>
                       <Dialog
                         open={
-                          openDetailsDialog &&
-                          selectedOrderId === orderId
+                          openDetailsDialog && selectedOrderId === orderId
                         }
                         onOpenChange={() => {
                           setOpenDetailsDialog(false);
@@ -164,9 +169,13 @@ function AdminOrdersView() {
                             <ShoppingOrderDetailsView
                               orderDetails={{
                                 ...orderDetails,
-                                // Defensive: ensure products is always an array
+                                // handle old vs new schema
                                 products: Array.isArray(orderDetails?.products)
                                   ? orderDetails.products
+                                  : Array.isArray(orderDetails?.items)
+                                  ? orderDetails.items
+                                  : Array.isArray(orderDetails?.cartItems)
+                                  ? orderDetails.cartItems
                                   : [],
                               }}
                             />
