@@ -29,14 +29,16 @@ function AdminOrdersView() {
     (state) => state.shopOrder
   );
 
+  // Fetch all orders for this user
   useEffect(() => {
     if (user?.id) {
       dispatch(getAllOrdersByUserId(user.id));
     }
   }, [dispatch, user?.id]);
 
+  // Open dialog only when matching order details are available
   useEffect(() => {
-    if (orderDetails?._id === selectedOrderId) {
+    if (orderDetails?._id && orderDetails._id === selectedOrderId) {
       setOpenDetailsDialog(true);
     }
   }, [orderDetails, selectedOrderId]);
@@ -97,27 +99,31 @@ function AdminOrdersView() {
               orderList.map((orderItem) => {
                 if (!orderItem) return null;
 
+                // Defensive: ensure all fields are defined
+                const orderId = orderItem._id ?? "N/A";
+                const orderDate = orderItem.orderDate ?? "";
+                const orderStatus = orderItem.orderStatus ?? "Pending";
+                const totalAmount = orderItem.totalAmount ?? 0;
+
                 return (
-                  <TableRow key={orderItem._id} className="hover:bg-gray-50">
+                  <TableRow key={orderId} className="hover:bg-gray-50">
                     <TableCell className="font-mono text-sm">
-                      {orderItem._id ?? "N/A"}
+                      {orderId}
                     </TableCell>
-                    <TableCell>{formatDate(orderItem.orderDate)}</TableCell>
+                    <TableCell>{formatDate(orderDate)}</TableCell>
                     <TableCell>
                       <Badge
-                        className={`py-1 px-3 ${getStatusBadgeColor(
-                          orderItem?.orderStatus
-                        )}`}
+                        className={`py-1 px-3 ${getStatusBadgeColor(orderStatus)}`}
                       >
-                        {orderItem?.orderStatus ?? "Pending"}
+                        {orderStatus}
                       </Badge>
                     </TableCell>
-                    <TableCell>₹{orderItem?.totalAmount ?? 0}</TableCell>
+                    <TableCell>₹{totalAmount}</TableCell>
                     <TableCell>
                       <Dialog
                         open={
                           openDetailsDialog &&
-                          selectedOrderId === orderItem._id
+                          selectedOrderId === orderId
                         }
                         onOpenChange={() => {
                           setOpenDetailsDialog(false);
@@ -128,18 +134,24 @@ function AdminOrdersView() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() =>
-                            handleFetchOrderDetails(orderItem._id)
-                          }
+                          onClick={() => handleFetchOrderDetails(orderId)}
                         >
                           View Details
                         </Button>
 
-                        {selectedOrderId === orderItem._id && orderDetails && (
-                          <ShoppingOrderDetailsView
-                            orderDetails={orderDetails}
-                          />
-                        )}
+                        {selectedOrderId === orderId &&
+                          orderDetails &&
+                          orderDetails._id === orderId && (
+                            <ShoppingOrderDetailsView
+                              orderDetails={{
+                                ...orderDetails,
+                                // Defensive: ensure products is always an array
+                                products: Array.isArray(orderDetails?.products)
+                                  ? orderDetails.products
+                                  : [],
+                              }}
+                            />
+                          )}
                       </Dialog>
                     </TableCell>
                   </TableRow>
