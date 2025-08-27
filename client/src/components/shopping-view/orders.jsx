@@ -61,10 +61,14 @@ function AdminOrdersView() {
 
   const formatDate = (dateString) => {
     try {
-      if (!dateString || typeof dateString !== "string") return "N/A";
-      // Defensive: only call includes/split if dateString is a string
-      if (typeof dateString === "string" && dateString.includes("T")) {
-        return dateString.split("T")[0];
+      // Ensure dateString is a string before using includes/split
+      if (typeof dateString !== "string" || !dateString) return "N/A";
+      if (dateString && typeof dateString === "string" && dateString.includes("T")) {
+        // Defensive: check split exists before calling
+        if (typeof dateString.split === "function") {
+          return dateString.split("T")[0];
+        }
+        return "N/A";
       }
       const dateObj = new Date(dateString);
       return isNaN(dateObj) ? "N/A" : dateObj.toLocaleDateString();
@@ -192,4 +196,3 @@ function AdminOrdersView() {
 }
 
 export default AdminOrdersView;
-   
